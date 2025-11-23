@@ -1,0 +1,141 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import { SITE, HOME, SOCIALS } from "@consts";
+import ArrowCard from "@components/ArrowCard.astro";
+import Link from "@components/Link.astro";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+const blog = (await getCollection("blog"))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
+
+const projects: CollectionEntry<"projects">[] = (
+  await getCollection("projects")
+)
+  .filter((project) => !project.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
+---
+
+<Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
+  <Container>
+    <aside data-pagefind-ignore>
+      <h1 class="font-semibold text-black dark:text-white">
+          I'm Tawfiq! A Cloud & Devops Engineer 👋
+      </h1>
+      <div class="space-y-16">
+        <section>
+          <article class="space-y-4">
+            <span>
+              <p>
+                  Passionate about bridging development and operations.
+                  I enjoy automating infrastructure with Terraform, optimising CI/CD pipelines
+                  with Github Actions,
+                  and deploying containerised applications on Kubernetes.
+              </p>
+              <p>
+                I love the challenge of reducing deployment times,
+                improving system reliability, and solving complex infrastructure problems.
+              </p>
+
+            </span>
+            <span class="animate">
+              <p>
+                <strong>Certifications (working towards):</strong><br />
+                AWS Solutions Architect Associate (SAA)<br />
+                Certified Kubernetes Administrator (CKA)
+              </p>
+              <p>
+                  <img src="https://skillicons.dev/icons?i=git,github,bash,linux,aws,terraform,docker,kubernetes,python" alt="Skills: Git, GitHub, Bash, Linux, AWS, Terraform, Docker, Kubernetes, Python" />
+                </p>
+              <p>
+                Check me out on
+                <Link href="https://github.com/wegogain-dev">GitHub
+                </Link>
+                and connect with me on
+                <Link href="https://www.linkedin.com/in/tawfiq-a-379746198/">
+                Linkedin.
+                </Link>
+              </p>
+            </span>
+          </article>
+        </section>
+
+        <section class="animate space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-y-2">
+            <h2 class="font-semibold text-black dark:text-white">
+              Latest posts
+            </h2>
+            <Link href="/blog"> See all posts </Link>
+          </div>
+          <ul class="not-prose flex flex-col gap-4">
+            {
+              blog.map((post) => (
+                <li>
+                  <ArrowCard entry={post} />
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="animate space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-y-2">
+            <h2 class="font-semibold text-black dark:text-white">
+              Recent projects
+            </h2>
+            <Link href="/projects"> See all projects </Link>
+          </div>
+          <ul class="not-prose flex flex-col gap-4">
+            {
+              projects.map((project) => (
+                <li>
+                  <ArrowCard entry={project} />
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="animate space-y-4">
+          <h2 class="font-semibold text-black dark:text-white">
+            Let's Connect
+          </h2>
+          <article>
+            <p>
+              If you want to get in touch with me about something or just to say
+              hi, reach out on social media or send me an email.
+            </p>
+          </article>
+          <ul class="not-prose flex flex-wrap gap-2">
+            {
+              SOCIALS.map((SOCIAL) => (
+                <li class="flex gap-x-2 text-nowrap">
+                  <Link
+                    href={SOCIAL.HREF}
+                    external
+                    aria-label={`${SITE.TITLE} on ${SOCIAL.NAME}`}
+                  >
+                    {SOCIAL.NAME}
+                  </Link>
+                  {"/"}
+                </li>
+              ))
+            }
+            <li class="line-clamp-1">
+              <Link
+                href={`mailto:${SITE.EMAIL}`}
+                aria-label={`Email ${SITE.TITLE}`}
+              >
+                {SITE.EMAIL}
+              </Link>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </aside>
+  </Container>
+</Layout>
