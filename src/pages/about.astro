@@ -1,0 +1,44 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { Image } from 'astro:assets'
+import aboutImage from '../../public/static/about-image.png'
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="About" />
+  <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="mb-6">
+        <Image
+          src={aboutImage}
+          alt="Abstract desert landscape with ancient arches"
+          class="rounded-lg shadow-sm w-full h-auto object-cover"
+        />
+      </div>
+      <div class="prose mb-8">
+        <p class="mt-0">
+          Hi, I'm Tawfiq. I'm a DevOps Engineer passionate about building
+          reliable infrastructure and scalable systems. My work focuses on
+          bridging the gap between complex system design and practical
+          automation, with a growing interest in optimising AI workflows.
+        </p>
+        <p>
+          I'll be noting down my thoughts on latest tech happening and whatever
+          my mind decides to write down, who knows!
+        </p>
+        <p>
+          Feel free to explore my <Link href="/projects" underline
+            >projects</Link
+          > or read my latest thoughts on the <Link href="/blog" underline
+            >blog</Link
+          >.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

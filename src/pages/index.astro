@@ -1,0 +1,188 @@
+---
+import BlogCard from '@/components/BlogCard.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import ProjectCard from '@/components/ProjectCard.astro'
+import { buttonVariants } from '@/components/ui/button'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { getAllProjects, getRecentPosts } from '@/lib/data-utils'
+
+const blog = await getRecentPosts(SITE.featuredPostCount)
+const projects = (await getAllProjects()).slice(0, 2)
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Home" />
+  <section class="rounded-lg border">
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h1 class="text-2xl font-semibold tracking-tight">
+        <span class="typing-text"></span>
+      </h1>
+    </div>
+    <div class="p-6 pt-0">
+      <p class="text-foreground mb-4 text-sm">
+        DevOps Engineer building reliable infrastructure and scalable systems.
+        Currently deep into system design and figuring out how AI workflows can
+        make automation less painful. I write about what I'm learning and
+        building along the way.
+      </p>
+      <div class="flex flex-wrap gap-3 sm:gap-4">
+        <!-- Foundations -->
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"
+          alt="Linux"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg"
+          alt="Bash"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+          alt="Git"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+          alt="GitHub"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0 dark:invert"
+        />
+        <!-- Cloud & IaC -->
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+          alt="AWS"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg"
+          alt="Terraform"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <!-- Containers & Orchestration -->
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+          alt="Docker"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+          alt="Kubernetes"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/argocd/argocd-original.svg"
+          alt="ArgoCD"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <!-- Observability -->
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg"
+          alt="Prometheus"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg"
+          alt="Grafana"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+        <!-- Languages -->
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+          alt="Python"
+          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
+        />
+      </div>
+    </div>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Latest projects</h2>
+    <ul class="flex flex-col gap-y-4">
+      {
+        projects.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/projects"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all projects <span
+          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span
+        >
+      </Link>
+    </div>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Latest posts</h2>
+    <ul class="flex flex-col gap-y-4">
+      {
+        blog.map((post) => (
+          <li>
+            <BlogCard entry={post} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/blog"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all posts <span
+          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span
+        >
+      </Link>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .typing-text::after {
+    content: '|';
+    animation: blink 0.7s infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  function initTyping() {
+    const text = "Hey, I'm Tawfiq"
+    const element = document.querySelector('.typing-text')
+    if (!element) return
+
+    // Reset the element
+    element.textContent = ''
+    let index = 0
+
+    function type() {
+      if (index < text.length && element) {
+        element.textContent += text.charAt(index)
+        index++
+        setTimeout(type, 80)
+      }
+    }
+
+    type()
+  }
+
+  // Only use astro:page-load - it fires on initial load and every navigation
+  document.addEventListener('astro:page-load', initTyping)
+</script>
