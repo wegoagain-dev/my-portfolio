@@ -1,10 +1,9 @@
 ---
 title: 'Part 1: Local Development'
-description: "Running a Python and Redis chat app locally, and discovering the dependency issues that Docker solves."
+description: 'Running a Python and Redis chat app locally, and discovering the dependency issues that Docker solves.'
 date: 2025-11-02
 order: 1
-tags: ['Python', 'Redis', 'Flask', 'Docker']
-authors: ['tawfiq']
+tags: ['Python', 'Redis']
 ---
 
 This is a real-time chat application with two main pieces: a Python web server (Flask + Socket.IO) that handles the UI and messaging, and a Redis database for fast message storage. For the app to work, both services need to be running and talking to each other.
@@ -67,7 +66,7 @@ cd redis-chat-app-python
 
 ```
    python3 -m venv venv
-   ```
+```
 
 (This creates a new hidden folder named `venv`.)
 
@@ -76,7 +75,7 @@ cd redis-chat-app-python
 ```
    # On macOS/Linux
    source venv/bin/activate
-   ```
+```
 
 (Your terminal prompt may change to show `venv`)
 
@@ -104,7 +103,7 @@ python app.py
 
 This error happened because I was using **Python 3.13** on my mac (it may run fine for you).
 
-The solution is to not use Python 3.13 for this project. The most common and stable versions for production and tutorials are **3.11**, **3.10**, or **3.9**.
+The solution is to not use Python 3.13 for this project. The most common and stable versions for deployment and tutorials are **3.11**, **3.10**, or **3.9**.
 
 When I tried to run the app locally, I hit a massive wall of C-compilation errors. My Mac was running the latest Python 3.13, but the app's dependencies weren't compatible. This is a classic 'dependency hell' problem that ruins projects.
 
@@ -116,10 +115,10 @@ What I did was Install python 3.9 using `brew install python@3.9`
 
 1. Then ran `deactivate` so we can delete the old virtual environment.
 2. We will now run `python3.9 -m venv venv` to start our virtual environment in python3.9
-and then do same steps as above
+   and then do same steps as above
 3. `source venv/bin/activate` and `pip install -r requirements.txt`.
 
-Now lets run `python app.py`  and we should be all good
+Now lets run `python app.py` and we should be all good
 
 ---
 
@@ -127,8 +126,7 @@ Your terminal will show the app is running. Now, flask runs on default port 5000
 
 ![alt text](./images/img-4.png)
 
-
-You can duplicate the tab after running this in the browser and simply login as a different user! Then message each other and you'll see it being reflected and the messages pulling through! 
+You can duplicate the tab after running this in the browser and simply login as a different user! Then message each other and you'll see it being reflected and the messages pulling through!
 
 Congratulations!
 
@@ -150,6 +148,7 @@ This line says: "Look for an environment variable named `REDIS_ENDPOINT_URL`. If
 Since we didn't set that variable, the app connected to `127.0.0.1:6379`, where our Redis server is already running.
 
 ---
+
 ## The app is running. But why is this a bad way to build software?
 
 **Problem 1: "It Works On My Machine"**
@@ -164,7 +163,7 @@ What if you start a new project that needs an older version of Flask? Now you ha
 
 You now have a Redis server running on your laptop all the time, even when you're not working on this project. It's just junk taking up resources.
 
-**Problem 4: No Clear Path to Production**
+**Problem 4: No Clear Path to Deployment**
 
 How do you deploy this to a server? You'd have to SSH in and repeat all these manual steps perfectly. What if you forget to install Redis? The app breaks.
 

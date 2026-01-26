@@ -3,8 +3,7 @@ title: 'Part 2: Docker Containerisation'
 description: 'Containerising our Python and Redis app, and connecting to two microservices using a Docker network.'
 date: 2025-11-03
 order: 2
-tags: ['Docker', 'Python', 'Redis']
-authors: ['tawfiq']
+tags: ['Docker']
 ---
 
 Before we dive in, I'd recommend watching a few tutorials on Docker if you're not familiar with it. Here are some good starting points:
@@ -151,7 +150,7 @@ Whats made this easier and what we have solved is:
 
 We've successfully containerised a multi-service application. We've replaced a fragile, manual setup with a reliable, portable, and isolated one.
 
-**In our next post** [Part 3](/blog/chat-app-eks/part-3), we'll take this a step further. We'll build an automated CI pipeline with GitHub Actions so that every time we push new code, our `my-chat-app` image is built and pushed to a central registry (ECR) automatically.
+**In our next post** [Part 3](/blog/chat-app-eks/part-3), we'll take this a step further. We'll build an automated CI/CD pipeline with GitHub Actions so that every time we push new code, our `my-chat-app` image is built and pushed to a central registry (ECR) automatically.
 
 
 

@@ -1,10 +1,9 @@
 ---
 title: 'Part 3: CI/CD with GitHub Actions'
-description: "Setting up a CI pipeline with GitHub Actions and AWS ECR to automatically build and push Docker images."
+description: 'Setting up a CI/CD pipeline with GitHub Actions and AWS ECR to automatically build and push Docker images.'
 date: 2025-11-04
 order: 3
-tags: ['GitHub Actions', 'AWS', 'ECR', 'Docker']
-authors: ['tawfiq']
+tags: ['GitHub Actions', 'AWS']
 ---
 
 Similar to Part 2, I'd recommend having some familiarity with CI/CD pipelines, GitHub Actions, and AWS ECR before proceeding. A basic understanding of AWS in general will help.
@@ -13,9 +12,9 @@ In [Part 2](/blog/chat-app-eks/part-2), we created a perfect, robust Docker setu
 
 **It's Manual**: If I change one line of code in app.py, I have to remember to manually run `docker build -t my-chat-app .` again.
 
-**It's Local**: The image `my-chat-app` only exists on my machine. How do my teammates get it? How would a cloud server in production get it?
+**It's Local**: The image `my-chat-app` only exists on my machine. How do my teammates get it? How would a live server get it?
 
-We need to fix this by building an automated **Continuous Integration (CI)** pipeline.
+We need to fix this by building an automated **Continuous Integration/Continuous Delivery (CI/CD)** pipeline.
 
 Our goals will be the following:
 
@@ -28,6 +27,7 @@ For this, we'll use two key services: GitHub Actions (the assembly line) and AWS
 Docker Hub is a public Docker registry, that you can also use but we will be using EKS in the next part, that is why we are hosting it on ECR.
 
 ## Step 1: Setting Up the "Warehouse" (AWS ECR)
+
 Before we can push an image, we need a place to store it. ECR is Amazon's fully-managed private Docker registry.
 
 I went into the AWS Console, searched for "ECR," and clicked "Create repository." I kept it private and named it `my-chat-app`. That's it. AWS then gives you a unique URL (a "repository URI") for your image.
@@ -36,8 +36,8 @@ I went into the AWS Console, searched for "ECR," and clicked "Create repository.
 ![alt text](./images/img-18.png)
 ![alt text](./images/img-19.png)
 
-
 ## Step 2: Giving GitHub the "Keys" to Our Warehouse (IAM & Secrets)
+
 My GitHub repository can't just push code to my private AWS account. That would be a massive security hole. I need to grant it specific, limited permissions.
 
 GitHub Actions is an outside service. Our AWS account is a private, locked-down fortress.
@@ -47,7 +47,7 @@ By default, AWS will block any login attempt from GitHub. To allow our workflow 
 ![alt text](./images/img-20.png)
 ![alt text](./images/img-21.png)
 
-**Grant Permissions**: On next, select `Attach policies directly` and search for `AmazonEC2ContainerRegistryFullAccess`. This gives it just enough permission to log in and push images, and nothing else. (This is known as the ***principle of least privilege.***). Then next and create user.
+**Grant Permissions**: On next, select `Attach policies directly` and search for `AmazonEC2ContainerRegistryFullAccess`. This gives it just enough permission to log in and push images, and nothing else. (This is known as the **_principle of least privilege._**). Then next and create user.
 ![alt text](./images/img-22.png)
 ![alt text](./images/img-23.png)
 
@@ -67,8 +67,8 @@ Be careful here, these are the credentials that will be used to authenticate the
 **Set GitHub Secrets**: We need to give our GitHub Actions workflow the ability to log in to our AWS account. To do that, it needs our **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY**. We dont want to be hardcoding them in the workflow file, so we will use **GitHub Secrets** to store them securely.
 
 The moment you run `git push` with this file (if we are to leave them in the repo), two bad things happen:\
-    **1. It's Public**: Your secret keys are now on GitHub in plain text for everyone to see.\
-    **2. It's Permanent**: Even if you delete the keys in the next commit, they are still saved forever in your Git history.
+ **1. It's Public**: Your secret keys are now on GitHub in plain text for everyone to see.\
+ **2. It's Permanent**: Even if you delete the keys in the next commit, they are still saved forever in your Git history.
 
 Now to set it up, in my GitHub repo (you should clone the repo I have), I went to Settings > Secrets and variables > Actions and `new repository secret`, I created two new secrets **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY**. Paste what you see in the .csv file into the value field or the AWS page youre still on.
 
@@ -78,9 +78,10 @@ This is where I securely store the keys so my workflow can use them without expo
 
 ![alt text](./images/img-29.png)
 
-To summarise: the IAM user is *who* is doing something, the policy is *what* it can do, and the access keys are *how* it logs in.
+To summarise: the IAM user is _who_ is doing something, the policy is _what_ it can do, and the access keys are _how_ it logs in.
 
 ## Step 3: Building the "Assembly Line" (GitHub Actions Workflow)
+
 This is the core of our CI pipeline. We will create a new file path in our project: `.github/workflows/ci.yml`. This YAML file is a set of instructions for GitHub Actions.
 
 Here is the complete workflow file, paste this in the ci.yml:
@@ -91,7 +92,7 @@ name: Build and Push Docker Image to ECR
 # 1. This is the trigger
 on:
   push:
-    branches: [ "master" ] # Runs every time I push to the master branch (yours could be main)
+    branches: ['master'] # Runs every time I push to the master branch (yours could be main)
 
 jobs:
   build-and-push:
@@ -103,7 +104,6 @@ jobs:
       ECR_REPOSITORY: my-chat-app # The name of my ECR repo
       # This will be the full AWS URI, e.g., 12345.dkr.ecr.eu-west-2.amazonaws.com (make sure you put your region here if different)
       ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
-
 
     steps:
       # 3. Get my code
@@ -135,14 +135,13 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
 ```
+
 ![alt text](./images/img-30.png)
 
 One thing I did add additional to the **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY** was the **AWS_ACCOUNT_ID**, this is just me protecting my AWS account ID. The **AWS_REGION** is also added to the environment variables but its not sensitive so I had left it.
 So dont forget to add the **AWS_ACCOUNT_ID** (found at the top right corner on AWS console) to your GitHub secrets.
 
 ![alt text](./images/img-31.png)
-
-
 
 Now that the code is in the `ci.yml` file, we can automate the process of building and pushing our Docker image to Amazon Elastic Container Registry (ECR). This ensures that our application is always up-to-date and ready to deploy. Commit the file using `git add .`, `git commit -m "Add ci.yml file"` and `git push`.
 
@@ -158,6 +157,7 @@ I went back to the AWS ECR console, clicked on my my-chat-app repository, and th
 ---
 
 ## Conclusion
+
 We've now officially entered the world of CI/CD, (well CI so far!). Our application is no longer just code on our laptop. It's a reliable, versioned, and centrally-stored artifact in a cloud registry.
 
 We've solved the "it works on my machine" problem and the "how do I share my image?" problem.
@@ -166,10 +166,9 @@ Our CI pipeline is now complete! We've successfully built an automated assembly 
 
 But an image in a warehouse isn't a running application. It's just a stored artifact.
 
-In the final part of this series, we'll build the 'factory' to run it. We'll use `eksctl` to provision a production-grade EKS (Kubernetes) cluster, then write the Kubernetes manifests to deploy our chat app and its Redis database from ECR to the live, public internet.
+In the final part of this series, we'll build the 'factory' to run it. We'll use `eksctl` to provision a live EKS (Kubernetes) cluster, then write the Kubernetes manifests to deploy our chat app and its Redis database from ECR to the live, public internet.
 
 Let's head to [Part 4](/blog/chat-app-eks/part-4)
-
 
 ---
 

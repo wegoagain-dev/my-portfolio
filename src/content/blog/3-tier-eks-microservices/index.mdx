@@ -1,18 +1,7 @@
 ---
 title: 'Understanding Three Tier Microservices on AWS EKS'
 description: 'Lets dive into the architecture and components of this app on AWS EKS'
-tags:
-  [
-    'AWS',
-    'Kubernetes',
-    'Terraform',
-    'GitHub Actions',
-    'ArgoCD',
-    'Prometheus',
-    'Grafana',
-    'ALB',
-    'RDS',
-  ]
+tags: ['AWS', 'Kubernetes', 'Terraform', 'ArgoCD', 'GitHub Actions']
 date: 2025-11-20
 image: './images/eks-devopsquiz.png'
 ---
@@ -22,6 +11,8 @@ image: './images/eks-devopsquiz.png'
 In this project, I deploy a three tier application (React frontend, Flask backend, PostgreSQL on RDS) to AWS EKS. Everything is managed through **Terraform**, including the VPC, EKS cluster, RDS database, and all the supporting infrastructure.
 
 For CI/CD, I use **GitHub Actions** with OIDC authentication to push images to **ECR**, and **ArgoCD** handles the GitOps deployment. Observability is covered by the **Prometheus/Grafana** stack.
+
+Check out the [source code](https://github.com/wegoagain-dev/3-tier-eks) on GitHub.
 
 ## Architecture & Design Decisions
 
