@@ -1,0 +1,46 @@
+---
+title: 'Full-Stack Cloud Cost Optimiser'
+description: 'A React and Python app on AWS ECS Fargate that finds unused resources to cut cloud bills.'
+date: 2025-12-18
+tags: ['AWS', 'ECS', 'Terraform', 'GitHub Actions']
+draft: false
+---
+
+## Architecture
+![arch](./images/architecture.png)
+
+## The Backstory
+I noticed a recurring issue in my projects. I would spin up resources for testing and then forget about them. That orphan EBS volume or idle EC2 instance might only cost a few dollars, but it adds up.
+
+I built this tool to scratch that itch. It connects to an AWS account, hunts for wasted resources, and tells you exactly how much money you could save.
+
+But more than just a CLI utility, I wanted to build a proper full-stack application. It has a **React frontend** for visualising cost data and a **Python backend** for the scanning logic, both running as containerised services. I used this project to demonstrate a full "local-to-production" workflow—not just a script on a laptop, but a scalable, secure cloud application.
+
+## Engineering Decisions
+
+### Why Fargate over EC2?
+I initially considered running this on a standard EC2 instance, but that felt like solving a problem by creating another one. I didn't want to manage OS patches or worry about server uptime.
+
+I chose **AWS Fargate** because it abstracts the underlying infrastructure. It allows the application to be purely container-driven. It scales down to zero when not in use (saving money) and removes the operational overhead of maintaining a server.
+
+### Infrastructure as Code
+Clicking around the AWS console is fine for prototypes, but it is prone to human error. I decided to provision the entire stack using **Terraform**.
+
+This includes the VPC, private subnets, Application Load Balancer, and the RDS database. Defining it in code means I can tear the entire environment down with `terraform destroy` when I am done testing, which ironically helps with the very cost optimisation problem I set out to solve.
+
+## The Challenge: Security
+One of the hardest parts of this project was handling credentials securely. My local version just used my personal AWS keys, but that is a major security risk for a production app.
+
+I had to learn how to implement **IAM Task Roles**. Now, the container itself has a role attached to it. It requests temporary credentials from AWS only when it needs to scan resources. This means there are zero long-lived secrets stored in the application code.
+
+For the database password, I used **AWS Secrets Manager**. The application retrieves the password at runtime, so even if someone inspected the source code or the running container, they wouldn't find the credentials.
+
+## Deployment Pipeline
+I didn't want to manually build and push Docker images every time I made a change. I set up a **GitHub Actions** pipeline that handles the heavy lifting.
+
+When I push code to the `main` branch, the pipeline builds the Docker images for the frontend and backend. It pushes them to Amazon ECR and then forces the ECS service to update. I configured this as a rolling update, so the old containers are only stopped once the new ones are healthy and receiving traffic.
+
+## Final Thoughts
+This project started as a simple Python script but evolved into a complete cloud-native architecture. It forced me to think about networking, security boundaries, and automation in a way that simple coding tutorials rarely do.
+
+If you want to see the code or run it yourself, you can find the repository here: [https://github.com/wegoagain-dev/cloud-cost-optimiser](https://github.com/wegoagain-dev/cloud-cost-optimiser)

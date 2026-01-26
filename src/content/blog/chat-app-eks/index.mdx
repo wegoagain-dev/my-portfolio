@@ -1,0 +1,24 @@
+---
+title: 'Python Chat App to Production on EKS'
+description: 'Taking a Python chat app from local development to production on AWS EKS, covering Docker, CI/CD, and Kubernetes.'
+date: 2025-11-01
+tags: ['Docker', 'Kubernetes', 'AWS', 'EKS', 'CI/CD', 'DevOps']
+---
+
+This series documents my journey deploying a Python and Redis chat application from scratch to a production Kubernetes cluster on AWS. It covers the full DevOps lifecycle: local development pain points, containerisation with Docker, automated CI/CD pipelines, and finally production deployment on EKS.
+
+## What You'll Learn
+
+- [**Part 1: Local Development**](/blog/chat-app-eks/part-1) – The manual way of running the app, highlighting dependency hell and the "it works on my machine" problem
+- [**Part 2: Docker Containerisation**](/blog/chat-app-eks/part-2) – Packaging the app and Redis into isolated, portable containers
+- [**Part 3: CI/CD with GitHub Actions**](/blog/chat-app-eks/part-3) – Automating image builds and pushes to AWS ECR
+- [**Part 4: Production EKS Deployment**](/blog/chat-app-eks/part-4) – Deploying to a serverless Kubernetes cluster with Fargate and load balancing
+
+## The Stack
+
+- **Application**: Python Flask + Redis
+- **Containerisation**: Docker
+- **CI/CD**: GitHub Actions
+- **Registry**: AWS ECR
+- **Orchestration**: AWS EKS with Fargate
+- **Load Balancing**: AWS Network Load Balancer

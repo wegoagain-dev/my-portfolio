@@ -140,6 +140,28 @@
     }
 
     :where(pre):not(:where(.not-prose, .not-prose *)) {
+      @apply max-h-[600px]! overflow-y-auto;
+    }
+
+    /* Expressive Code line padding */
+    :where(.expressive-code .ec-line):not(:where(.not-prose, .not-prose *)) {
+      @apply px-4;
+    }
+
+    /* Scrollbar styling for code blocks */
+    :where(.expressive-code pre):not(:where(.not-prose, .not-prose *)) {
+      &::-webkit-scrollbar {
+        @apply h-2.5 w-2.5;
+      }
+      &::-webkit-scrollbar-track {
+        @apply bg-transparent;
+      }
+      &::-webkit-scrollbar-thumb {
+        @apply bg-border rounded-full border-2 border-solid border-transparent bg-clip-padding;
+      }
+    }
+
+    :where(pre):not(:where(.not-prose, .not-prose *)) {
       @apply max-h-[min(68vh,1000px)]! overflow-y-auto [&::-webkit-scrollbar-corner]:hidden;
     }
 

@@ -1,0 +1,271 @@
+---
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  images: ImageMetadata[]
+}
+
+const { images } = Astro.props
+
+const MAX_COLS = 3
+
+type GalleryItem = {
+  image: ImageMetadata
+  index: number
+}
+
+const items: GalleryItem[] = images.map((image, index) => ({
+  image,
+  index,
+}))
+
+// Distribute images across columns using a height-balancing algorithm
+const cols: GalleryItem[][] = Array.from({ length: MAX_COLS }, () => [])
+const heights = Array.from({ length: MAX_COLS }, () => 0)
+
+for (const item of items) {
+  const w = item.image.width || 1
+  const h = item.image.height || 1
+  const ratio = h / w
+
+  // Find the shortest column
+  let targetCol = 0
+  for (let i = 1; i < heights.length; i++) {
+    if (heights[i] < heights[targetCol]) targetCol = i
+  }
+
+  cols[targetCol].push(item)
+  heights[targetCol] += ratio
+}
+
+const EAGER_COUNT = 9
+---
+
+<div>
+  <!-- Masonry Grid Layout -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-2 md:grid-cols-3">
+    {
+      cols.map((col: GalleryItem[], colIndex: number) => (
+        <div class="flex flex-col gap-4 sm:gap-2" data-col={colIndex}>
+          {col.map(({ image, index }) => (
+            <div
+              class="relative break-inside-avoid overflow-hidden rounded-sm"
+              style={`aspect-ratio:${image.width}/${image.height};`}
+            >
+              <Image
+                src={image}
+                alt={`Photo ${index + 1}`}
+                loading={index < EAGER_COUNT ? 'eager' : 'lazy'}
+                class="gallery-item h-full w-full cursor-zoom-in object-cover transition-transform duration-300 hover:scale-105"
+                data-index={index}
+                data-src={image.src}
+                data-width={image.width}
+                data-height={image.height}
+                widths={[360, 720, 1200]}
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+              />
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  <!-- Lightbox Overlay -->
+  <div
+    id="gallery-overlay"
+    class="bg-background/90 fixed inset-0 z-[9999] hidden opacity-0 backdrop-blur-lg transition-opacity duration-300"
+    aria-hidden="true"
+  >
+    <div
+      class="relative flex h-full w-full items-center justify-center p-4"
+      id="overlay-container"
+    >
+      <!-- Left navigation arrow -->
+      <button
+        id="prev-button"
+        class="text-primary hover:bg-secondary/20 absolute left-5 z-20 hidden p-1.5 opacity-70 transition-all duration-300 hover:scale-110 hover:opacity-100 xl:block"
+        aria-label="Previous image"
+      >
+        <Icon name="lucide:chevron-left" class="size-7" />
+      </button>
+
+      <!-- Image Container -->
+      <div
+        id="image-stack"
+        class="relative shadow-2xl transition-opacity duration-300 ease-out"
+      >
+        <img
+          id="overlay-image"
+          class="max-h-[90vh] max-w-[90vw] object-contain"
+          alt=""
+          decoding="async"
+          draggable="false"
+        />
+      </div>
+
+      <!-- Right navigation arrow -->
+      <button
+        id="next-button"
+        class="text-primary hover:bg-secondary/20 absolute right-5 z-20 hidden p-1.5 opacity-70 transition-all duration-300 hover:scale-110 hover:opacity-100 xl:block"
+        aria-label="Next image"
+      >
+        <Icon name="lucide:chevron-right" class="size-7" />
+      </button>
+
+      <!-- Close button -->
+      <button
+        id="close-button"
+        class="text-primary absolute right-3 top-3 z-30 p-1.5 opacity-70 transition-all duration-300 hover:rotate-90 hover:opacity-100 sm:right-5 sm:top-5"
+        aria-label="Close gallery"
+      >
+        <Icon name="lucide:x" class="size-6" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupGallery(): void {
+    const overlay = document.getElementById(
+      'gallery-overlay',
+    ) as HTMLDivElement | null
+    const overlayContainer = document.getElementById(
+      'overlay-container',
+    ) as HTMLDivElement | null
+    const overlayImage = document.getElementById(
+      'overlay-image',
+    ) as HTMLImageElement | null
+
+    const prevButton = document.getElementById(
+      'prev-button',
+    ) as HTMLButtonElement | null
+    const nextButton = document.getElementById(
+      'next-button',
+    ) as HTMLButtonElement | null
+    const closeButton = document.getElementById(
+      'close-button',
+    ) as HTMLButtonElement | null
+
+    if (!overlay || !overlayContainer || !overlayImage) return
+
+    const galleryImages = document.querySelectorAll(
+      '.gallery-item',
+    ) as NodeListOf<HTMLImageElement>
+
+    const byIndex = new Map<number, HTMLImageElement>()
+    galleryImages.forEach((img) => {
+      const idx = Number(img.dataset.index ?? NaN)
+      if (!Number.isNaN(idx)) byIndex.set(idx, img)
+    })
+
+    const totalImages = byIndex.size
+    if (!totalImages) return
+
+    let currentIndex = -1
+    let inactivityTimer: number | null = null
+
+    function getByIndex(index: number) {
+      return byIndex.get(((index % totalImages) + totalImages) % totalImages)
+    }
+
+    function showIndex(index: number) {
+      const safeIndex = ((index % totalImages) + totalImages) % totalImages
+      const targetImg = getByIndex(safeIndex)
+      if (!targetImg) return
+
+      currentIndex = safeIndex
+
+      const src = targetImg.src || targetImg.dataset.src || ''
+      const alt = targetImg.alt
+
+      overlayImage!.src = src
+      overlayImage!.alt = alt
+    }
+
+    function openOverlay(index: number) {
+      if (index < 0) return
+      document.body.style.overflow = 'hidden'
+      overlay!.classList.remove('hidden')
+      overlay!.setAttribute('aria-hidden', 'false')
+
+      showIndex(index)
+
+      requestAnimationFrame(() => {
+        overlay!.classList.remove('opacity-0')
+        showButtons()
+      })
+
+      document.addEventListener('keydown', onKeyDown)
+    }
+
+    function closeOverlay() {
+      overlay!.classList.add('opacity-0')
+      overlay!.setAttribute('aria-hidden', 'true')
+
+      setTimeout(() => {
+        overlay!.classList.add('hidden')
+        overlayImage!.src = ''
+        document.body.style.overflow = ''
+      }, 300)
+
+      document.removeEventListener('keydown', onKeyDown)
+    }
+
+    function showButtons() {
+      if (prevButton) prevButton.style.opacity = '1'
+      if (nextButton) nextButton.style.opacity = '1'
+      if (closeButton) closeButton.style.opacity = '1'
+
+      if (inactivityTimer) clearTimeout(inactivityTimer)
+      if (window.innerWidth > 640) {
+        inactivityTimer = window.setTimeout(() => {
+          if (prevButton) prevButton.style.opacity = '0'
+          if (nextButton) nextButton.style.opacity = '0'
+          if (closeButton) closeButton.style.opacity = '0'
+        }, 3000)
+      }
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') closeOverlay()
+      if (e.key === 'ArrowLeft') showIndex(currentIndex - 1)
+      if (e.key === 'ArrowRight') showIndex(currentIndex + 1)
+    }
+
+    galleryImages.forEach((img) => {
+      img.addEventListener('click', (e) => {
+        const idx = Number((e.currentTarget as HTMLElement).dataset.index)
+        openOverlay(idx)
+      })
+    })
+
+    closeButton?.addEventListener('click', (e) => {
+      e.stopPropagation()
+      closeOverlay()
+    })
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay || e.target === overlayContainer) {
+        closeOverlay()
+      }
+    })
+
+    overlay.addEventListener('mousemove', showButtons)
+
+    prevButton?.addEventListener('click', (e) => {
+      e.stopPropagation()
+      showIndex(currentIndex - 1)
+    })
+
+    nextButton?.addEventListener('click', (e) => {
+      e.stopPropagation()
+      showIndex(currentIndex + 1)
+    })
+  }
+
+  document.addEventListener('astro:page-load', setupGallery)
+  document.addEventListener('DOMContentLoaded', setupGallery)
+</script>

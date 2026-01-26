@@ -53,7 +53,7 @@ export default defineConfig({
           themeCssSelector: (theme: ExpressiveCodeTheme) =>
             `[data-theme="${theme.name.split('-')[1]}"]`,
           defaultProps: {
-            wrap: true,
+            wrap: false,
             collapseStyle: 'collapsible-auto',
             overridesByLang: {
               'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
@@ -63,29 +63,33 @@ export default defineConfig({
             },
           },
           styleOverrides: {
-            codeFontSize: '0.75rem',
-            borderColor: 'var(--border)',
+            codeFontSize: '0.875rem',
+            codeLineHeight: '1.75',
+            borderRadius: '0.75rem',
+            borderColor: 'oklch(var(--border))',
             codeFontFamily: 'var(--font-mono)',
+            codePaddingBlock: '1rem',
+            codePaddingInline: '0',
             codeBackground:
-              'color-mix(in oklab, var(--muted) 25%, transparent)',
+              'color-mix(in oklab, oklch(var(--secondary)) 20%, transparent)',
             frames: {
-              editorActiveTabForeground: 'var(--muted-foreground)',
+              editorActiveTabForeground: 'oklch(var(--foreground))',
               editorActiveTabBackground:
-                'color-mix(in oklab, var(--muted) 25%, transparent)',
+                'color-mix(in oklab, oklch(var(--secondary)) 20%, transparent)',
               editorActiveTabIndicatorBottomColor: 'transparent',
               editorActiveTabIndicatorTopColor: 'transparent',
-              editorTabBorderRadius: '0',
+              editorTabBorderRadius: '0.75rem 0.75rem 0 0',
               editorTabBarBackground: 'transparent',
-              editorTabBarBorderBottomColor: 'transparent',
+              editorTabBarBorderBottomColor: 'oklch(var(--border))',
               frameBoxShadowCssValue: 'none',
               terminalBackground:
-                'color-mix(in oklab, var(--muted) 25%, transparent)',
+                'color-mix(in oklab, oklch(var(--secondary)) 20%, transparent)',
               terminalTitlebarBackground: 'transparent',
-              terminalTitlebarBorderBottomColor: 'transparent',
-              terminalTitlebarForeground: 'var(--muted-foreground)',
+              terminalTitlebarBorderBottomColor: 'oklch(var(--border))',
+              terminalTitlebarForeground: 'oklch(var(--foreground))',
             },
             lineNumbers: {
-              foreground: 'var(--muted-foreground)',
+              foreground: 'oklch(var(--muted-foreground))',
             },
             uiFontFamily: 'var(--font-sans)',
           },
