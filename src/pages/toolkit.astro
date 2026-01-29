@@ -1,0 +1,749 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Toolkit" />
+  <Breadcrumbs items={[{ label: 'Toolkit', icon: 'lucide:terminal' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <h1 class="mb-2">101</h1>
+        <p class="text-muted-foreground mt-0">
+          My shortcuts and tools reference.
+        </p>
+
+        <!-- Anchor Navigation -->
+        <div class="not-prose my-6 flex flex-wrap gap-2">
+          <a
+            href="#linux"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Linux</a
+          >
+          <a
+            href="#ghostty"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Ghostty</a
+          >
+          <a
+            href="#shell"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Shell</a
+          >
+          <a
+            href="#git"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Git</a
+          >
+          <a
+            href="#kubernetes"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Kubernetes</a
+          >
+          <a
+            href="#docker"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Docker</a
+          >
+          <a
+            href="#terraform"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Terraform</a
+          >
+          <a
+            href="#k9s"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >k9s</a
+          >
+          <a
+            href="#lazygit"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >lazygit</a
+          >
+          <a
+            href="#utilities"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Utilities</a
+          >
+        </div>
+
+        <!-- Linux File System Basics -->
+        <h2 id="linux">Linux File System Basics</h2>
+        <p>
+          Understanding where you are and how Linux organises files is critical
+          for managing your server.
+        </p>
+
+        <h3>The Prompt Explained</h3>
+        <p>
+          When you log in, you see something like this: <code
+            >wegoagain@k8s:~$</code>
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Part</th>
+                <th class="py-2 text-left font-medium">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>wegoagain</code></td>
+                <td class="py-2">Your username</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>@k8s</code></td>
+                <td class="py-2">The hostname (name of the server)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>~</code></td>
+                <td class="py-2"
+                  >Current directory (<code>~</code> = your home folder)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>$</code></td>
+                <td class="py-2"
+                  >Privilege level (<code>$</code> = user, <code>#</code> = root)</td
+                >
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The Tree Structure</h3>
+        <p>
+          Linux uses a single hierarchical tree starting at <code>/</code> (root).
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Path</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>/</code></td>
+                <td class="py-2"
+                  >Root directory. The beginning of the filesystem.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>/home</code></td>
+                <td class="py-2">Contains user directories.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>/home/user</code> (<code>~</code>)</td
+                >
+                <td class="py-2"
+                  >Your home directory. Your personal workspace with full
+                  control.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>/etc</code></td>
+                <td class="py-2"
+                  >Configuration files. System-wide settings (SSH, network,
+                  k3s).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>/var</code></td>
+                <td class="py-2"
+                  >Variable data. Files that grow/change (logs, databases).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>/bin</code> &amp; <code>/usr/bin</code></td
+                >
+                <td class="py-2"
+                  >Binaries. Where programs live (<code>ls</code>, <code
+                    >kubectl</code
+                  >).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>/tmp</code></td>
+                <td class="py-2"
+                  >Temporary. Files here are deleted on reboot.</td
+                >
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Navigation Commands</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>pwd</code></td>
+                <td class="py-2"
+                  >Print working directory. Shows where you are.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ls</code></td>
+                <td class="py-2">List files in current folder.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ls -la</code></td>
+                <td class="py-2"
+                  >List all files including hidden (starting with <code>.</code
+                  >) with permissions.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cd /path</code></td>
+                <td class="py-2"
+                  >Change directory. Moves you to a specific folder.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cd ~</code> or <code>cd</code></td>
+                <td class="py-2"
+                  >Go home. Takes you to <code>/home/yourname</code>.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cd ..</code></td>
+                <td class="py-2">Go up one folder in the tree.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>mkdir &lt;dir&gt;</code></td>
+                <td class="py-2">Create a directory.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>touch &lt;file&gt;</code></td>
+                <td class="py-2">Create an empty file.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>cp &lt;src&gt; &lt;dest&gt;</code></td
+                >
+                <td class="py-2">Copy a file.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>mv &lt;src&gt; &lt;dest&gt;</code></td
+                >
+                <td class="py-2">Move or rename a file.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>rm &lt;file&gt;</code></td>
+                <td class="py-2">Remove a file.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>rm -rf &lt;dir&gt;</code></td>
+                <td class="py-2">
+                  Remove directory and all contents.
+                  <details class="mt-1">
+                    <summary
+                      class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                      >What does -rf mean?</summary
+                    >
+                    <p
+                      class="text-muted-foreground border-border mt-1 border-l-2 pl-2 text-xs"
+                    >
+                      <code>-r</code> = recursive (delete folders and everything
+                      inside).
+                      <code>-f</code> = force (don't ask for confirmation). Use carefully.
+                    </p>
+                  </details>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Permissions 101</h3>
+        <p>Linux is strict about who owns what.</p>
+        <div class="not-prose mb-4 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Permission</th>
+                <th class="py-2 text-left font-medium">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>r</code> (read)</td>
+                <td class="py-2">Can open/view the file.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>w</code> (write)</td>
+                <td class="py-2">Can edit/delete the file.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>x</code> (execute)</td>
+                <td class="py-2">Can run the file as a program.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          You own everything in <code>/home/yourname</code>. <strong
+            >Root</strong
+          > owns almost everything else (<code>/etc</code>, <code>/usr</code>,
+          etc). To edit system files, use <code>sudo</code> to temporarily act as
+          root.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>sudo &lt;command&gt;</code></td>
+                <td class="py-2">
+                  Run command as root (admin).
+                  <details class="mt-1">
+                    <summary
+                      class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                      >Example</summary
+                    >
+                    <p
+                      class="text-muted-foreground border-border mt-1 border-l-2 pl-2 text-xs"
+                    >
+                      <code>touch /etc/myfile.txt</code> fails (permission denied).<br
+                      />
+                      <code>sudo touch /etc/myfile.txt</code> works.
+                    </p>
+                  </details>
+                </td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>chmod &lt;mode&gt; &lt;file&gt;</code></td
+                >
+                <td class="py-2">
+                  Change file permissions.
+                  <details class="mt-1">
+                    <summary
+                      class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                      >Common modes</summary
+                    >
+                    <p
+                      class="text-muted-foreground border-border mt-1 border-l-2 pl-2 text-xs"
+                    >
+                      <code>chmod +x script.sh</code> = make executable.<br />
+                      <code>chmod 755 script.sh</code> = rwx for owner, rx for others.<br
+                      />
+                      <code>chmod 644 file.txt</code> = rw for owner, r for others.
+                    </p>
+                  </details>
+                </td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>chown &lt;user&gt;:&lt;group&gt; &lt;file&gt;</code
+                  ></td
+                >
+                <td class="py-2">
+                  Change file owner.
+                  <details class="mt-1">
+                    <summary
+                      class="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                      >Example</summary
+                    >
+                    <p
+                      class="text-muted-foreground border-border mt-1 border-l-2 pl-2 text-xs"
+                    >
+                      <code>sudo chown www-data:www-data /var/www</code> = give ownership
+                      to web server user.
+                    </p>
+                  </details>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Ghostty -->
+        <h2 id="ghostty">Ghostty</h2>
+        <p>GPU-accelerated terminal emulator with native macOS feel.</p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Key</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cmd+d</code></td>
+                <td class="py-2">Split pane vertically (left/right)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cmd+shift+d</code></td>
+                <td class="py-2">Split pane horizontally (up/down)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"
+                  ><code>cmd+[</code> / <code>cmd+]</code></td
+                >
+                <td class="py-2">Focus previous/next split</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cmd+ctrl+arrow</code></td>
+                <td class="py-2">Resize splits</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Shell -->
+        <h2 id="shell">Shell</h2>
+        <p>
+          Zsh with <Link href="https://starship.rs" external underline
+            >starship</Link
+          > for a minimal prompt showing git status, k8s context, and terraform workspace.
+          Using <Link href="https://zed.dev" external underline>zed</Link> as my
+          editor for its speed and built-in AI assistance.
+        </p>
+
+        <h3>Navigation</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Shortcut</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ctrl+r</code></td>
+                <td class="py-2">Fuzzy history search (fzf)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ctrl+t</code></td>
+                <td class="py-2">Fuzzy file finder (fzf)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>z &lt;dir&gt;</code></td>
+                <td class="py-2">Smart cd (zoxide)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>fe</code></td>
+                <td class="py-2">Fuzzy find + open in zed</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>File Listing (eza)</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Alias</th>
+                <th class="py-2 text-left font-medium">Command</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ls</code></td>
+                <td class="py-2">eza with icons</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ll</code></td>
+                <td class="py-2">Long format with git status</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>lt</code></td>
+                <td class="py-2">Tree view</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>la</code></td>
+                <td class="py-2">All files, long format</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>File Reading (bat)</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Alias</th>
+                <th class="py-2 text-left font-medium">Command</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cat</code></td>
+                <td class="py-2">bat (plain style)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>catp</code></td>
+                <td class="py-2">bat (full decorations)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Git -->
+        <h2 id="git">Git</h2>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Alias</th>
+                <th class="py-2 text-left font-medium">Command</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>gs</code></td>
+                <td class="py-2">git status -sb</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>gp</code></td>
+                <td class="py-2">git pull</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>gpo</code></td>
+                <td class="py-2">git push origin</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>gc</code></td>
+                <td class="py-2">git commit -m</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>gco</code></td>
+                <td class="py-2">git checkout</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>gd</code></td>
+                <td class="py-2">git diff</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>glog</code></td>
+                <td class="py-2">Visual log (oneline, graph, decorate)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>fgh</code></td>
+                <td class="py-2">Fuzzy search git history</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Kubernetes -->
+        <h2 id="kubernetes">Kubernetes</h2>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Alias/Function</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>k</code></td>
+                <td class="py-2">kubectl</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kg</code></td>
+                <td class="py-2">kubectl get</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kd</code></td>
+                <td class="py-2">kubectl describe</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kdel</code></td>
+                <td class="py-2">kubectl delete</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kl</code></td>
+                <td class="py-2">kubectl logs -f</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kctx</code></td>
+                <td class="py-2">Fuzzy context switch</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kns</code></td>
+                <td class="py-2">Fuzzy namespace switch</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Docker -->
+        <h2 id="docker">Docker</h2>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Alias/Function</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>d</code></td>
+                <td class="py-2">docker</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>dc</code></td>
+                <td class="py-2">docker compose</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>dps</code></td>
+                <td class="py-2">Formatted container list</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>dex</code></td>
+                <td class="py-2">docker exec -it</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>dclean</code></td>
+                <td class="py-2"
+                  >Prune everything (containers, images, volumes)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>dlogs</code></td>
+                <td class="py-2">Fuzzy container logs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Terraform -->
+        <h2 id="terraform">Terraform</h2>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Alias/Function</th>
+                <th class="py-2 text-left font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tf</code></td>
+                <td class="py-2">terraform</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tfi</code></td>
+                <td class="py-2">terraform init</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tfp</code></td>
+                <td class="py-2">terraform plan</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tfa</code></td>
+                <td class="py-2">terraform apply</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tfd</code></td>
+                <td class="py-2">terraform destroy</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tfv</code></td>
+                <td class="py-2">terraform validate</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tff</code></td>
+                <td class="py-2">terraform fmt -recursive</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>tfw</code></td>
+                <td class="py-2">Fuzzy workspace switch</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- k9s -->
+        <h2 id="k9s">k9s</h2>
+        <p>
+          Kubernetes TUI for cluster management. Faster than kubectl for most
+          operations.
+          <Link href="https://k9scli.io/topics/commands/" external underline
+            >Docs</Link
+          >
+        </p>
+
+        <!-- lazygit -->
+        <h2 id="lazygit">lazygit</h2>
+        <p>
+          Git TUI for staging, committing, and branch management. Makes complex
+          git operations visual.
+          <Link
+            href="https://github.com/jesseduffield/lazygit#keybindings"
+            external
+            underline>Docs</Link
+          >
+        </p>
+
+        <!-- Utilities -->
+        <h2 id="utilities">Utilities</h2>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Function</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>killport &lt;port&gt;</code></td>
+                <td class="py-2">Kill process on port</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>top10</code></td>
+                <td class="py-2">Show top 10 CPU processes</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>replace 'old' 'new'</code></td>
+                <td class="py-2">Search and replace in files</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>brewup</code></td>
+                <td class="py-2">Update, upgrade, cleanup brew</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ports</code></td>
+                <td class="py-2">Show listening ports</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>myip</code></td>
+                <td class="py-2">Show public IP</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,25 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Kubernetes" />
+  <Breadcrumbs items={[{ label: 'Kubernetes', icon: 'lucide:container' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <h1 class="mb-2">Kubernetes</h1>
+        <p class="text-muted-foreground mt-0">
+          Oh you found my Kubernetes page. Here is where I'll be noting down
+          what I've been learning. At least you'll leave with some new
+          knowledge.
+        </p>
+
+        <!-- Content will go here -->
+      </div>
+    </div>
+  </section>
+</Layout>

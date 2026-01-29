@@ -14,30 +14,39 @@ import aboutImage from '../../public/static/about-image.png'
   <section>
     <div class="min-w-full">
       <div class="prose mb-6">
-        <p class="mt-0">
-          Hi, I'm Tawfiq. I'm a DevOps Engineer passionate about building
-          reliable infrastructure and scalable systems. My work focuses on
-          bridging the gap between complex system design and practical
-          automation, with a growing interest in optimising AI workflows.
+        <p class="mt-0">Oh hello. Your curiosity led you here.</p>
+        <p>
+          Having notes are important to me. You can build on them, edit them,
+          and share them with others. I'll be noting down my thoughts on latest
+          tech findings and whatever my mind decides to write down, who knows!
         </p>
         <p>
-          I'll be noting down my thoughts on latest tech happening and whatever
-          my mind decides to write down, who knows!
-        </p>
-        <p>
-          Feel free to explore my <Link href="/projects" underline
+          For now feel free to explore my <Link href="/projects" underline
             >projects</Link
-          > or read my latest thoughts on the <Link href="/blog" underline
-            >blog</Link
-          >.
+          >, read my latest <Link href="/blog" underline>thoughts</Link>, or
+          check out my <Link href="/toolkit" underline>101</Link> for everything
+          I use to optimise my workflow.
+        </p>
+        <p>
+          <span class="text-foreground font-medium"
+            >What i'm currently doing:</span
+          > At the moment I'm working on my homelab using <Link
+            href="https://k3s.io/"
+            external
+            underline>k3s</Link
+          >. Homelabs are honestly the number one way to learn about <Link
+            href="/kubernetes"
+            underline>Kubernetes</Link
+          >. Guide will come soon!
         </p>
       </div>
       <div class="mb-8">
         <Image
           src={aboutImage}
           alt="Abstract desert landscape with ancient arches"
-          class="rounded-lg shadow-sm w-full h-auto object-cover"
+          class="h-auto w-full rounded-lg object-cover shadow-sm"
         />
+        <p>amazing picture right?</p>
       </div>
     </div>
   </section>
