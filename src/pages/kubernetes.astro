@@ -18,7 +18,2711 @@ import Layout from '@/layouts/Layout.astro'
           knowledge.
         </p>
 
-        <!-- Content will go here -->
+        <!-- Anchor Navigation -->
+        <div class="not-prose my-6 flex flex-wrap gap-2">
+          <a
+            href="#core"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Core</a
+          >
+          <a
+            href="#config"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Config</a
+          >
+          <a
+            href="#observability"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Observability</a
+          >
+          <a
+            href="#networking"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Networking</a
+          >
+          <a
+            href="#storage"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Storage</a
+          >
+          <a
+            href="#scheduling"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Scheduling</a
+          >
+          <a
+            href="#security"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Security</a
+          >
+          <a
+            href="#cluster-admin"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Cluster Admin</a
+          >
+          <a
+            href="#app-dev"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >App Dev</a
+          >
+          <a
+            href="#quick-reference"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Quick Ref</a
+          >
+          <a
+            href="#architecture"
+            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
+            >Architecture</a
+          >
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 1. CORE CONCEPTS -->
+        <!-- ============================================== -->
+        <h2 id="core">1. Core Concepts</h2>
+        <p>
+          These are the fundamental building blocks that run your containers.
+          Understanding these resources is essential before moving to more
+          advanced topics.
+        </p>
+
+        <!-- Pod -->
+        <h3>Pod</h3>
+        <p>
+          The smallest deployable unit in Kubernetes. Think of it as a wrapper
+          around one or more containers that share the same network and storage.
+          Pods are designed to be temporary. They can be created, destroyed, and
+          replaced at any time. This is why you rarely create Pods directly.
+          Instead, you use controllers like Deployments that manage Pods for you.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get pods</code></td>
+                <td class="py-2">List pods in current namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe pod &lt;name&gt;</code></td>
+                <td class="py-2">Show detailed pod info and events</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl delete pod &lt;name&gt;</code></td>
+                <td class="py-2">Delete a pod (controller recreates it)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    ports:
+    - containerPort: 80</code></pre>
+        </details>
+
+        <!-- Deployment -->
+        <h3>
+          Deployment
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          The most common way to run stateless applications like web servers or
+          APIs. Deployments manage ReplicaSets, which manage Pods. This layered
+          approach enables rolling updates. When you update the container image,
+          the Deployment creates new Pods with the new version, waits for them
+          to be ready, then gradually removes the old Pods. Your application
+          stays online throughout the update.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create deploy &lt;name&gt; --image=&lt;img&gt;</code></td>
+                <td class="py-2">Create deployment imperatively</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl scale deploy &lt;name&gt; --replicas=3</code></td>
+                <td class="py-2">Scale to 3 replicas</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl rollout status deploy &lt;name&gt;</code></td>
+                <td class="py-2">Watch rollout progress</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80</code></pre>
+        </details>
+
+        <!-- ReplicaSet -->
+        <h3>
+          ReplicaSet
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          The engine inside a Deployment that keeps your application running.
+          ReplicaSets ensure the correct number of Pod copies are always
+          running. If a Pod crashes or a node fails, the ReplicaSet
+          automatically creates a new Pod to replace it. You typically do not
+          work with ReplicaSets directly. Deployments manage them for you.
+          Understanding ReplicaSets helps explain why applications remain
+          available during failures.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get rs</code></td>
+                <td class="py-2">List ReplicaSets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe rs &lt;name&gt;</code></td>
+                <td class="py-2">Show ReplicaSet details and events</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- StatefulSet -->
+        <h3>
+          StatefulSet
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Use StatefulSets for applications that need stable identities, like
+          databases or message queues. Unlike Deployments where Pods are
+          interchangeable, StatefulSet Pods get predictable names
+          (<code>mysql-0</code>, <code>mysql-1</code>) and are created in order.
+          Each Pod maintains its own persistent storage that survives restarts.
+          This makes StatefulSets ideal for clustered databases where each node
+          needs to know its identity.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get sts</code></td>
+                <td class="py-2">List StatefulSets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl scale sts &lt;name&gt; --replicas=3</code></td>
+                <td class="py-2">Scale StatefulSet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi</code></pre>
+        </details>
+
+        <!-- DaemonSet -->
+        <h3>
+          DaemonSet
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Ensures exactly one Pod runs on every node in your cluster. Perfect
+          for system-level services that need to be present everywhere. Common
+          examples include log collectors that gather container logs from each
+          node, monitoring agents that report node metrics, or network plugins
+          that set up networking on each machine. When you add a new node to the
+          cluster, the DaemonSet automatically deploys its Pod there without any
+          manual intervention.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get ds</code></td>
+                <td class="py-2">List DaemonSets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe ds &lt;name&gt;</code></td>
+                <td class="py-2">Show DaemonSet details</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Job / CronJob -->
+        <h3>
+          Job / CronJob
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Jobs run Pods that complete a task and then exit. Use a Job for
+          one-time tasks like database migrations or batch data processing. Use
+          a CronJob to run Jobs on a schedule, such as nightly backups or
+          periodic cleanup tasks. Unlike Deployments which keep Pods running
+          indefinitely, Jobs and CronJobs are designed for tasks that have a
+          definite end point.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create job &lt;name&gt; --image=&lt;img&gt;</code></td>
+                <td class="py-2">Create a one-time job</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get jobs</code></td>
+                <td class="py-2">List jobs and completion status</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get cronjobs</code></td>
+                <td class="py-2">List scheduled CronJobs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >CronJob Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup
+spec:
+  schedule: "0 2 * * *"  # Daily at 2am
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: backup-tool:latest
+            command: ["/bin/sh", "-c", "backup.sh"]
+          restartPolicy: OnFailure</code></pre>
+        </details>
+
+        <!-- Multi-container Pods -->
+        <h3>
+          Multi-container Pods
+          <span
+            class="ml-2 rounded bg-green-500/20 px-[6px] py-[2px] text-xs text-green-400"
+            >CKAD</span
+          >
+        </h3>
+        <p>
+          Pods can contain multiple containers that share network and storage.
+          Common patterns:
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Pattern</th>
+                <th class="py-2 text-left font-medium">Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Init Container</strong></td>
+                <td class="py-2"
+                  >Runs before main container (wait for DB, download config)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Sidecar</strong></td>
+                <td class="py-2"
+                  >Runs alongside main container (log shipper, proxy)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Ambassador</strong></td>
+                <td class="py-2">Proxy outbound connections (localhost to external)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Adapter</strong></td>
+                <td class="py-2">Transform output for consumption (log formatting)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Init Container Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: app
+spec:
+  initContainers:
+  - name: wait-for-db
+    image: busybox
+    command: ['sh', '-c', 'until nc -z db 5432; do sleep 2; done']
+  containers:
+  - name: app
+    image: myapp:latest</code></pre>
+        </details>
+
+        <!-- Static Pods -->
+        <h3>
+          Static Pods
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Pods managed directly by kubelet on a node, not by the API server.
+          Control plane components (kube-apiserver, etcd) run as static pods.
+          Manifests live in <code>/etc/kubernetes/manifests/</code>.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ls /etc/kubernetes/manifests/</code></td>
+                <td class="py-2">List static pod manifests</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get pods -n kube-system</code></td>
+                <td class="py-2">Static pods appear with node name suffix</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 2. CONFIGURATION -->
+        <!-- ============================================== -->
+        <h2 id="config">2. Configuration</h2>
+        <p>
+          Applications need configuration. This section covers how to inject
+          settings, store sensitive data securely, and control resource usage.
+        </p>
+
+        <!-- ConfigMap -->
+        <h3>
+          ConfigMap
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Store non-sensitive configuration data like application settings,
+          feature flags, or configuration files. You can inject ConfigMap data
+          into Pods as environment variables or mount it as files. Important
+          note: changing a ConfigMap does not automatically restart running
+          Pods. They will see the new values only after they restart.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create cm &lt;name&gt; --from-literal=key=value</code></td>
+                <td class="py-2">Create from literal values</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create cm &lt;name&gt; --from-file=config.txt</code></td>
+                <td class="py-2">Create from file</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get cm &lt;name&gt; -o yaml</code></td>
+                <td class="py-2">View ConfigMap contents</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Usage in Pod</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code># As environment variable
+env:
+- name: LOG_LEVEL
+  valueFrom:
+    configMapKeyRef:
+      name: app-config
+      key: log_level
+
+# As mounted file
+volumes:
+- name: config
+  configMap:
+    name: app-config
+volumeMounts:
+- name: config
+  mountPath: /etc/config</code></pre>
+        </details>
+
+        <!-- Secret -->
+        <h3>
+          Secret
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Store sensitive data like passwords, API keys, and TLS certificates.
+          Secrets are base64-encoded but not encrypted by default. Anyone with
+          access to the cluster can read them. For production, use tools like
+          Sealed Secrets or External Secrets Operator to encrypt secrets before
+          storing them in Git. Like ConfigMaps, Secrets can be mounted as files
+          or injected as environment variables.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create secret generic &lt;name&gt; --from-literal=pass=secret</code></td>
+                <td class="py-2">Create generic secret</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create secret tls &lt;name&gt; --cert=tls.crt --key=tls.key</code></td>
+                <td class="py-2">Create TLS secret</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get secret &lt;name&gt; -o jsonpath='&#123;.data.pass&#125;' | base64 -d</code></td>
+                <td class="py-2">Decode secret value</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Namespace -->
+        <h3>
+          Namespace
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          A way to divide a cluster into multiple virtual clusters. Use
+          namespaces to separate different environments like development,
+          staging, and production, or to isolate team resources. Each namespace
+          has its own DNS scope. Services in different namespaces can still
+          communicate using the full DNS name like
+          <code>&lt;service&gt;.&lt;namespace&gt;.svc.cluster.local</code>.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create ns &lt;name&gt;</code></td>
+                <td class="py-2">Create namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get pods -n &lt;namespace&gt;</code></td>
+                <td class="py-2">List pods in specific namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl config set-context --current --namespace=&lt;ns&gt;</code></td>
+                <td class="py-2">Set default namespace</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resource Requests & Limits -->
+        <h3>
+          Resource Requests & Limits
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Control how much CPU and memory your containers can use.
+          <strong>Requests</strong> tell the scheduler the minimum resources a
+          container needs. The scheduler uses this to decide which node can run
+          the Pod. <strong>Limits</strong> set the maximum resources a container
+          can consume. If a container exceeds its memory limit, Kubernetes kills
+          it with an OOMKilled error. If it exceeds its CPU limit, the CPU gets
+          throttled but the container keeps running.
+        </p>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>containers:
+- name: app
+  image: myapp
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "250m"      # 0.25 CPU cores
+    limits:
+      memory: "256Mi"
+      cpu: "500m"      # 0.5 CPU cores</code></pre>
+        </details>
+
+        <!-- ResourceQuota -->
+        <h3>
+          ResourceQuota
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Limits aggregate resource consumption per namespace. Prevents one team
+          from consuming all cluster resources. Can limit CPU, memory, storage,
+          and object counts (pods, services, secrets).
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get resourcequota -n &lt;ns&gt;</code></td>
+                <td class="py-2">Show quota usage</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe resourcequota &lt;name&gt;</code></td>
+                <td class="py-2">Show limits and current usage</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-quota
+  namespace: dev
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "20"</code></pre>
+        </details>
+
+        <!-- LimitRange -->
+        <h3>
+          LimitRange
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Sets default resource requests/limits for containers in a namespace.
+          Prevents pods from being created without resource specs. Can also
+          enforce min/max constraints.
+        </p>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+spec:
+  limits:
+  - default:          # Default limits
+      cpu: "500m"
+      memory: "256Mi"
+    defaultRequest:   # Default requests
+      cpu: "100m"
+      memory: "128Mi"
+    type: Container</code></pre>
+        </details>
+
+        <!-- SecurityContext -->
+        <h3>
+          SecurityContext
+          <span
+            class="ml-2 rounded bg-green-500/20 px-[6px] py-[2px] text-xs text-green-400"
+            >CKAD</span
+          >
+        </h3>
+        <p>
+          Security settings at Pod or container level: run as specific user,
+          drop capabilities, read-only filesystem, prevent privilege escalation.
+          Critical for hardening production workloads.
+        </p>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
+  securityContext:           # Pod level
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  containers:
+  - name: app
+    securityContext:         # Container level
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]</code></pre>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- 3. OBSERVABILITY & DEBUGGING -->
+        <!-- ============================================== -->
+        <h2 id="observability">3. Observability & Debugging</h2>
+        <p>
+          When things go wrong, you need to understand what is happening. This
+          section covers health checks, logs, and troubleshooting techniques.
+        </p>
+
+        <!-- Probes -->
+        <h3>
+          Probes (Liveness, Readiness, Startup)
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Kubernetes uses health checks to monitor containers. Each probe serves
+          a different purpose. Use <strong>liveness probes</strong> to detect when
+          an application has crashed or deadlocked. Kubernetes restarts the
+          container if this probe fails. Use <strong>readiness probes</strong> to
+          know when an application is ready to accept traffic. Kubernetes removes
+          the Pod from Service endpoints until it passes. Use
+          <strong>startup probes</strong> for slow-starting applications. This
+          probe disables the other probes until the container is ready, preventing
+          premature restarts.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Probe</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>livenessProbe</strong></td>
+                <td class="py-2"
+                  >Is the container alive? Failure = container restart</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>readinessProbe</strong></td>
+                <td class="py-2"
+                  >Is the container ready for traffic? Failure = removed from
+                  Service</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>startupProbe</strong></td>
+                <td class="py-2"
+                  >For slow-starting apps. Disables other probes until success</td
+                >
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>containers:
+- name: app
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 3</code></pre>
+        </details>
+
+        <!-- Logging -->
+        <h3>
+          Logging
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          View container output to debug issues. Kubernetes captures stdout and
+          stderr from containers. You can view logs from running Pods or from
+          previous instances after a crash. In production, set up a log
+          aggregation system like Loki or Elasticsearch because logs disappear
+          when Pods are deleted.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl logs &lt;pod&gt;</code></td>
+                <td class="py-2">View pod logs</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl logs &lt;pod&gt; -c &lt;container&gt;</code></td>
+                <td class="py-2">Logs from specific container</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl logs &lt;pod&gt; -f --tail=100</code></td>
+                <td class="py-2">Follow last 100 lines</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Events & Troubleshooting -->
+        <h3>
+          Events & Troubleshooting
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Events are the first place to look when something goes wrong. They
+          show scheduling decisions, image pulls, crashes, and more. Events are
+          kept for 1 hour by default.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get events --sort-by='.lastTimestamp'</code></td>
+                <td class="py-2">Recent events sorted by time</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe pod &lt;name&gt;</code></td>
+                <td class="py-2">Pod details + events (most useful!)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get pods -o wide</code></td>
+                <td class="py-2">Show node placement and IPs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Common Troubleshooting -->
+        <h3>
+          Troubleshooting Patterns
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Symptom</th>
+                <th class="py-2 text-left font-medium">Check</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Pod stuck <code>Pending</code></td>
+                <td class="py-2">Resources, node selectors, taints, PVC binding</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Pod <code>CrashLoopBackOff</code></td>
+                <td class="py-2">Logs, command/args, probes, permissions</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Pod <code>ImagePullBackOff</code></td>
+                <td class="py-2">Image name, tag, registry auth (imagePullSecrets)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Service not routing</td>
+                <td class="py-2">Selector labels match, endpoints exist, port numbers</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 4. NETWORKING -->
+        <!-- ============================================== -->
+        <h2 id="networking">4. Networking</h2>
+        <p>
+          Applications need to talk to each other. This section covers how Pods
+          discover and communicate with other services, both inside and outside
+          the cluster.
+        </p>
+
+        <!-- Service -->
+        <h3>
+          Service
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Pods come and go. Their IP addresses change constantly. Services solve
+          this by providing a stable IP address and DNS name that always routes
+          to healthy Pods. You define a Service with a label selector. Kubernetes
+          automatically maintains a list of matching Pods and load balances
+          traffic between them. If a Pod dies and a new one starts, the Service
+          automatically updates to send traffic to the new Pod.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Type</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ClusterIP</code></td>
+                <td class="py-2"
+                  >Internal-only (default). Accessible within cluster only.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>NodePort</code></td>
+                <td class="py-2"
+                  >Exposes on each node's IP at a static port (30000-32767).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>LoadBalancer</code></td>
+                <td class="py-2"
+                  >Provisions external load balancer (cloud or MetalLB).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ExternalName</code></td>
+                <td class="py-2">Maps to external DNS name (CNAME record).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="not-prose mt-4 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl expose deploy &lt;name&gt; --port=80</code></td>
+                <td class="py-2">Create ClusterIP service</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get svc</code></td>
+                <td class="py-2">List services</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get endpoints &lt;svc&gt;</code></td>
+                <td class="py-2">Show which Pods back the service</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx        # Must match Pod labels
+  ports:
+  - port: 80          # Service port
+    targetPort: 8080  # Container port</code></pre>
+        </details>
+
+        <!-- Ingress -->
+        <h3>
+          Ingress
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Layer 7 (HTTP/HTTPS) routing rules. Instead of exposing multiple
+          NodePorts, you expose one Ingress controller (Traefik, Nginx) and
+          route by hostname or path:
+          <code>grafana.example.com</code> → Grafana Service.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get ingress</code></td>
+                <td class="py-2">List ingress resources</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe ingress &lt;name&gt;</code></td>
+                <td class="py-2">Show routing rules and backend services</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - app.example.com
+    secretName: app-tls</code></pre>
+        </details>
+
+        <!-- NetworkPolicy -->
+        <h3>
+          NetworkPolicy
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Firewall rules for Pods. By default, all Pods can talk to all Pods.
+          NetworkPolicies restrict this: "Only backend Pods can reach database
+          on port 5432." Requires a CNI plugin that supports policies (Calico,
+          Cilium).
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get netpol</code></td>
+                <td class="py-2">List network policies</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe netpol &lt;name&gt;</code></td>
+                <td class="py-2">Show policy rules</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example: Deny all ingress</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+spec:
+  podSelector: {}    # Applies to all pods
+  policyTypes:
+  - Ingress          # Deny all incoming traffic</code></pre>
+        </details>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example: Allow from specific pods</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: database
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: backend
+    ports:
+    - port: 5432</code></pre>
+        </details>
+
+        <!-- DNS -->
+        <h3>
+          DNS (CoreDNS)
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Every Service gets a DNS name automatically. CoreDNS runs as a
+          Deployment in <code>kube-system</code> and resolves cluster DNS.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">DNS Pattern</th>
+                <th class="py-2 text-left font-medium">Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Same namespace</td>
+                <td class="py-2"><code>&lt;service&gt;</code></td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Cross namespace</td>
+                <td class="py-2"><code>&lt;service&gt;.&lt;namespace&gt;</code></td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Fully qualified</td>
+                <td class="py-2"><code>&lt;service&gt;.&lt;namespace&gt;.svc.cluster.local</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 5. STORAGE -->
+        <!-- ============================================== -->
+        <h2 id="storage">5. Storage</h2>
+        <p>
+          Pods are temporary. When they restart, they lose all data. This
+          section covers how to store data that survives Pod restarts.
+        </p>
+
+        <!-- PersistentVolume -->
+        <h3>
+          PersistentVolume (PV)
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          A PersistentVolume represents actual storage in the cluster (NFS share,
+          cloud disk, or local SSD). Each PV has properties: capacity (size),
+          accessModes (how it can be mounted), and storageClassName (type of
+          storage). When created, a PV waits for a PVC that matches these
+          properties to claim it. With dynamic provisioning (StorageClasses),
+          you don't create PVs manually. They're created automatically when a
+          PVC requests them.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get pv</code></td>
+                <td class="py-2">List PersistentVolumes</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe pv &lt;name&gt;</code></td>
+                <td class="py-2">Show PV details and claim binding</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-data
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/pv</code></pre>
+        </details>
+
+        <!-- PersistentVolumeClaim -->
+        <h3>
+          PersistentVolumeClaim (PVC)
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          A request for storage. When you create a PVC, Kubernetes looks for a
+          PV that matches three criteria: (1) accessModes must match, (2)
+          requested storage must fit within PV capacity, (3) storageClassName
+          must match. If no PV exists and you specified a StorageClass, a new PV
+          is created automatically. The PVC then binds to the PV, making it
+          unavailable to other claims.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get pvc</code></td>
+                <td class="py-2">List PVCs and their status</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe pvc &lt;name&gt;</code></td>
+                <td class="py-2">Show bound PV and events</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn</code></pre>
+        </details>
+
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >How PVC Binds to PV</summary
+          >
+          <div class="mt-2 space-y-3 text-sm">
+            <p><strong>Static Provisioning (Admin creates PV):</strong></p>
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Admin creates PV with: capacity=10Gi, accessModes=ReadWriteOnce, storageClassName=fast-ssd</li>
+              <li>User creates PVC requesting: storage=5Gi, accessModes=ReadWriteOnce, storageClassName=fast-ssd</li>
+              <li>Kubernetes matches all three criteria and binds PVC to PV</li>
+            </ul>
+            <p><strong>Dynamic Provisioning (StorageClass):</strong></p>
+            <ul class="list-disc pl-4 space-y-1">
+              <li>User creates PVC with: storageClassName=longhorn</li>
+              <li>Longhorn provisioner creates a new PV automatically</li>
+              <li>PVC binds to the newly created PV</li>
+            </ul>
+            <p class="text-muted-foreground"><strong>Key Point:</strong> The Pod only references the PVC by name, never the PV directly.</p>
+          </div>
+        </details>
+
+        <!-- StorageClass -->
+        <h3>
+          StorageClass
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Defines how to create storage automatically. A StorageClass specifies
+          which provisioner to use (Longhorn, AWS EBS, GCP PD, etc.) and
+          parameters like replication or disk type. When a PVC requests
+          <code>storageClassName: longhorn</code>, the Longhorn provisioner
+          creates a new PV automatically. No manual disk allocation needed.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get sc</code></td>
+                <td class="py-2">List StorageClasses</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe sc &lt;name&gt;</code></td>
+                <td class="py-2">Show provisioner and parameters</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Volume Types -->
+        <h3>
+          Volume Types
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>Beyond PVCs, Kubernetes supports ephemeral and special volume types:</p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Type</th>
+                <th class="py-2 text-left font-medium">Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>emptyDir</code></td>
+                <td class="py-2"
+                  >Scratch space shared between containers. Deleted when Pod
+                  dies.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>hostPath</code></td>
+                <td class="py-2"
+                  >Mounts directory from the node. Use sparingly (ties Pod to
+                  node).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>configMap</code> / <code>secret</code></td>
+                <td class="py-2">Mount ConfigMap or Secret as files.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>projected</code></td>
+                <td class="py-2"
+                  >Combine multiple sources into one volume. Useful for service
+                  account tokens with additional metadata.</td
+                >
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Access Modes -->
+        <h3>
+          Access Modes
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Defines how many nodes can mount a volume simultaneously and in what
+          mode. Choose based on your application architecture.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Mode</th>
+                <th class="py-2 text-left font-medium">Meaning</th>
+                <th class="py-2 text-left font-medium">Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ReadWriteOnce (RWO)</code></td>
+                <td class="py-2">Single node can mount read-write</td>
+                <td class="py-2">Most common. Databases, single-instance apps.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ReadOnlyMany (ROX)</code></td>
+                <td class="py-2">Multiple nodes can mount read-only</td>
+                <td class="py-2">Shared config files, static assets.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ReadWriteMany (RWX)</code></td>
+                <td class="py-2">Multiple nodes can mount read-write</td>
+                <td class="py-2">Shared file storage (NFS, CephFS).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 6. SCHEDULING -->
+        <!-- ============================================== -->
+        <h2 id="scheduling">6. Scheduling</h2>
+        <p>
+          Not every node is suitable for every workload. Sometimes you need Pods
+          on machines with SSDs, or you want to spread replicas across different
+          availability zones. This section covers how to influence where Pods run.
+        </p>
+
+        <!-- nodeSelector -->
+        <h3>
+          nodeSelector
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          The simplest way to control which nodes run your Pods. Add labels to
+          nodes, then specify those labels in your Pod spec. The scheduler only
+          places the Pod on nodes that match all the labels you specify. For
+          example, you might label certain nodes as having SSD storage, then use
+          nodeSelector to ensure database Pods only run on those nodes.
+        </p>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example YAML</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
+  nodeSelector:
+    disktype: ssd
+    zone: us-west-1a</code></pre>
+        </details>
+        <div class="not-prose mt-2 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl label node &lt;name&gt; disktype=ssd</code></td>
+                <td class="py-2">Add label to node</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get nodes --show-labels</code></td>
+                <td class="py-2">Show all node labels</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Affinity -->
+        <h3>
+          Affinity & Anti-Affinity
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          A more powerful alternative to nodeSelector with three types.
+          <strong>Node affinity</strong> works like nodeSelector but supports
+          expressions and soft preferences. <strong>Pod affinity</strong> places
+          Pods near other Pods, useful for co-locating related services.
+          <strong>Pod anti-affinity</strong> spreads Pods across different nodes,
+          ensuring high availability by preventing all replicas from running on
+          the same machine.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Type</th>
+                <th class="py-2 text-left font-medium">Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>requiredDuringScheduling</code></td>
+                <td class="py-2">Hard requirement - must match or Pod won't schedule</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>preferredDuringScheduling</code></td>
+                <td class="py-2">Soft preference - scheduler tries but not guaranteed</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Node Affinity Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: zone
+            operator: In
+            values:
+            - us-west-1a
+            - us-west-1b</code></pre>
+        </details>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Pod Anti-Affinity Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code># Spread replicas across nodes
+spec:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: web
+        topologyKey: kubernetes.io/hostname</code></pre>
+        </details>
+
+        <!-- Taints & Tolerations -->
+        <h3>
+          Taints & Tolerations
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Taints and tolerations work together to control Pod placement.
+          <strong>Taints</strong> are applied to nodes and prevent Pods from
+          scheduling there. <strong>Tolerations</strong> are applied to Pods and
+          allow them to ignore specific taints. Control plane nodes use taints
+          to prevent regular workloads from running on them. You can also use
+          taints to reserve certain nodes for specific workloads, like GPU
+          machines for machine learning tasks.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Effect</th>
+                <th class="py-2 text-left font-medium">Behavior</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>NoSchedule</code></td>
+                <td class="py-2">New Pods won't schedule without toleration</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>PreferNoSchedule</code></td>
+                <td class="py-2">Scheduler avoids but not guaranteed</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>NoExecute</code></td>
+                <td class="py-2">Evicts existing Pods without toleration</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="not-prose mt-4 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl taint node &lt;n&gt; key=value:NoSchedule</code></td>
+                <td class="py-2">Add taint to node</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl taint node &lt;n&gt; key:NoSchedule-</code></td>
+                <td class="py-2">Remove taint (note the minus)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Toleration Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "gpu"
+    effect: "NoSchedule"</code></pre>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- 7. SECURITY -->
+        <!-- ============================================== -->
+        <h2 id="security">7. Security</h2>
+        <p>
+          Security in Kubernetes involves controlling who can access resources
+          and how workloads run. This section covers authentication,
+          authorisation, and workload security. These concepts appear in almost
+          every real deployment, making them essential to understand early.
+        </p>
+
+        <!-- RBAC -->
+        <h3>
+          RBAC (Role-Based Access Control)
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          RBAC controls what users and applications can do in the cluster. The
+          system works with four resources that define and assign permissions.
+          First, a Role or ClusterRole defines what actions are allowed on which
+          resources. Then, a RoleBinding or ClusterRoleBinding connects those
+          permissions to users, groups, or ServiceAccounts. Think of it like
+          giving someone a key card. The Role defines which doors the card
+          opens, and the Binding gives the card to a specific person.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Resource</th>
+                <th class="py-2 text-left font-medium">Scope</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>Role</code></td>
+                <td class="py-2">Namespace</td>
+                <td class="py-2">Defines permissions within a namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ClusterRole</code></td>
+                <td class="py-2">Cluster-wide</td>
+                <td class="py-2">Defines cluster-wide permissions</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>RoleBinding</code></td>
+                <td class="py-2">Namespace</td>
+                <td class="py-2">Binds Role to users/groups/ServiceAccounts</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ClusterRoleBinding</code></td>
+                <td class="py-2">Cluster-wide</td>
+                <td class="py-2">Binds ClusterRole cluster-wide</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="not-prose mt-4 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl auth can-i create pods</code></td>
+                <td class="py-2">Check if you can create pods</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl auth can-i list secrets --as=system:serviceaccount:default:mysa</code></td>
+                <td class="py-2">Check permissions as ServiceAccount</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Role + RoleBinding Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: dev
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: dev
+subjects:
+- kind: ServiceAccount
+  name: dev-sa
+  namespace: dev
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io</code></pre>
+        </details>
+
+        <!-- ServiceAccount -->
+        <h3>
+          ServiceAccount
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Gives Pods an identity to authenticate with the Kubernetes API. Every
+          namespace automatically gets a <code>default</code> ServiceAccount,
+          but you should create custom ones for applications that need specific
+          permissions. Combine ServiceAccounts with RBAC Roles to control what
+          each application can access. For example, a backup tool might need
+          permission to read Secrets, while a monitoring agent might only need
+          to read Pod metrics.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create sa &lt;name&gt;</code></td>
+                <td class="py-2">Create ServiceAccount</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get sa</code></td>
+                <td class="py-2">List ServiceAccounts</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Using ServiceAccount in Pod</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
+  serviceAccountName: my-custom-sa
+  automountServiceAccountToken: false  # Disable if not needed</code></pre>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- 8. CLUSTER ADMINISTRATION -->
+        <!-- ============================================== -->
+        <h2 id="cluster-admin">8. Cluster Administration</h2>
+        <p>
+          These topics focus on managing the cluster infrastructure itself.
+        </p>
+
+        <!-- Control Plane Components -->
+        <h3>
+          Control Plane Components
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          The control plane is the brain of the cluster. These components run
+          on the master nodes and manage the entire cluster. Understanding what
+          each component does helps with troubleshooting cluster issues.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Component</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kube-apiserver</code></td>
+                <td class="py-2">The front door. All kubectl commands and internal communication go through here.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>etcd</code></td>
+                <td class="py-2">The database. Stores all cluster configuration and state.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kube-scheduler</code></td>
+                <td class="py-2">Decides which node should run each new Pod based on resources and constraints.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kube-controller-manager</code></td>
+                <td class="py-2">Runs background loops that ensure the actual state matches the desired state.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubelet</code></td>
+                <td class="py-2">Runs on every node. Creates and manages containers, reports node health.</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kube-proxy</code></td>
+                <td class="py-2">Runs on every node. Manages network rules for Services.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- kubeadm -->
+        <h3>
+          kubeadm
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          The standard tool for creating and managing Kubernetes clusters.
+          While you can use k3s for a homelab, the CKA exam tests kubeadm
+          extensively. It handles initializing the control plane, joining worker
+          nodes, and upgrading cluster versions.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubeadm init</code></td>
+                <td class="py-2">Initialize control plane node</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubeadm join</code></td>
+                <td class="py-2">Join worker node to cluster</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubeadm upgrade plan</code></td>
+                <td class="py-2">Check available upgrades</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- etcd Backup/Restore -->
+        <h3>
+          etcd Backup & Restore
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          etcd stores everything about your cluster. All deployments, services,
+          configurations, and secrets live there. Without backups, a corrupted
+          etcd means rebuilding your entire cluster from scratch. Regular
+          snapshots are essential for production environments.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ETCDCTL_API=3 etcdctl snapshot save backup.db</code></td>
+                <td class="py-2">Create snapshot backup</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ETCDCTL_API=3 etcdctl snapshot restore backup.db</code></td>
+                <td class="py-2">Restore from snapshot</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Full Backup Command</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>ETCDCTL_API=3 etcdctl snapshot save /backup/etcd-snapshot.db \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key</code></pre>
+        </details>
+
+        <!-- Node Maintenance -->
+        <h3>
+          Node Maintenance
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Take nodes offline safely without disrupting running applications.
+          First cordon the node to prevent new Pods from scheduling there. Then
+          drain the node to gracefully evict all running Pods, giving them time
+          to shut down cleanly. The Pods will be rescheduled on other nodes.
+          Finally, uncordon the node when maintenance is complete to allow new
+          Pods to run there again.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl cordon &lt;node&gt;</code></td>
+                <td class="py-2">Mark node unschedulable (no new Pods)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl drain &lt;node&gt; --ignore-daemonsets</code></td>
+                <td class="py-2">Evict Pods and cordon</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl uncordon &lt;node&gt;</code></td>
+                <td class="py-2">Mark node schedulable again</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 9. APPLICATION DEVELOPMENT -->
+        <!-- ============================================== -->
+        <h2 id="app-dev">9. Application Development</h2>
+        <p>
+          Advanced topics for building and deploying applications on Kubernetes.
+        </p>
+
+        <!-- CRDs -->
+        <h3>
+          Custom Resource Definitions (CRDs)
+          <span
+            class="ml-2 rounded bg-green-500/20 px-[6px] py-[2px] text-xs text-green-400"
+            >CKAD</span
+          >
+        </h3>
+        <p>
+          Extend Kubernetes with your own resource types. This is how tools
+          like ArgoCD add Application resources and Prometheus adds
+          ServiceMonitor resources to the cluster. A CRD defines the schema, and
+          a Controller watches for those resources and takes action. Together
+          they form an Operator, which can automate complex application
+          management.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get crd</code></td>
+                <td class="py-2">List all Custom Resource Definitions</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl api-resources</code></td>
+                <td class="py-2">List all resources including CRDs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Example: ArgoCD Application CRD</summary
+          >
+          <div class="mt-2 space-y-3 text-sm">
+            <p>
+              ArgoCD is a GitOps tool that uses CRDs to manage deployments. This
+              example shows an Application resource that tells ArgoCD to sync a
+              folder from Git to your cluster:
+            </p>
+            <pre
+              class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: argoproj.io/v1alpha1  # Custom API group from CRD
+kind: Application                  # Custom resource type
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/myorg/myrepo.git
+    targetRevision: HEAD            # Watch this Git branch
+    path: apps/my-app               # Folder containing K8s manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production           # Deploy to this namespace
+  syncPolicy:
+    automated:
+      prune: true                   # Delete resources removed from Git
+      selfHeal: true                # Fix drift from desired state</code></pre>
+            <p class="text-muted-foreground">
+              <strong>Key points:</strong> This is not a built-in Kubernetes
+              resource. The <code>argoproj.io/v1alpha1</code> API group comes
+              from the ArgoCD CRD. The ArgoCD controller watches for these
+              resources and automatically syncs your cluster to match the Git
+              repository.
+            </p>
+          </div>
+        </details>
+
+        <!-- Helm -->
+        <h3>
+          Helm
+          <span
+            class="ml-2 rounded bg-green-500/20 px-[6px] py-[2px] text-xs text-green-400"
+            >CKAD</span
+          >
+        </h3>
+        <p>
+          The package manager for Kubernetes. Complex applications like
+          databases or monitoring stacks might need dozens of YAML files.
+          Helm packages these into charts with configurable values. You
+          install a chart with a single command and customise it through
+          values files. Helm tracks versions and supports rollbacks if an
+          upgrade goes wrong.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>helm install &lt;name&gt; &lt;chart&gt;</code></td>
+                <td class="py-2">Install a chart</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>helm upgrade &lt;name&gt; &lt;chart&gt;</code></td>
+                <td class="py-2">Upgrade release</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>helm list</code></td>
+                <td class="py-2">List installed releases</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Deployment Strategies -->
+        <h3>
+          Deployment Strategies
+          <span
+            class="ml-2 rounded bg-green-500/20 px-[6px] py-[2px] text-xs text-green-400"
+            >CKAD</span
+          >
+        </h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Strategy</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>RollingUpdate</strong></td>
+                <td class="py-2"
+                  >Default. Gradually replaces old Pods with new ones.</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Recreate</strong></td>
+                <td class="py-2">Kill all old Pods, then create new ones (downtime).</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Blue/Green</strong></td>
+                <td class="py-2"
+                  >Run both versions, switch traffic at once (via Service
+                  selector).</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Canary</strong></td>
+                <td class="py-2"
+                  >Route small % of traffic to new version, gradually increase.</td
+                >
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >RollingUpdate Config</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Max pods over desired during update
+      maxUnavailable: 0  # Max pods unavailable during update</code></pre>
+        </details>
+
+        <!-- ============================================== -->
+        <!-- 10. QUICK REFERENCE -->
+        <!-- ============================================== -->
+        <h2 id="quick-reference">Quick Reference</h2>
+        <p>Essential commands and shortcuts for daily Kubernetes operations.</p>
+
+        <h3>Resource Shortcuts</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Shortcut</th>
+                <th class="py-2 text-left font-medium">Full Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>po</code></td>
+                <td class="py-2">pods</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>svc</code></td>
+                <td class="py-2">services</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>cm</code></td>
+                <td class="py-2">configmaps</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>secret</code></td>
+                <td class="py-2">secrets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ing</code></td>
+                <td class="py-2">ingresses</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>pvc</code></td>
+                <td class="py-2">persistentvolumeclaims</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>pv</code></td>
+                <td class="py-2">persistentvolumes</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>deploy</code></td>
+                <td class="py-2">deployments</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>sts</code></td>
+                <td class="py-2">statefulsets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ds</code></td>
+                <td class="py-2">daemonsets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>rs</code></td>
+                <td class="py-2">replicasets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>ns</code></td>
+                <td class="py-2">namespaces</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>netpol</code></td>
+                <td class="py-2">networkpolicies</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>sa</code></td>
+                <td class="py-2">serviceaccounts</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Output Formats</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Flag</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>-o yaml</code></td>
+                <td class="py-2">Output as YAML</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>-o json</code></td>
+                <td class="py-2">Output as JSON</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>-o wide</code></td>
+                <td class="py-2">Extra columns (node, IP)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>-o name</code></td>
+                <td class="py-2">Just resource names</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>--show-labels</code></td>
+                <td class="py-2">Include all labels</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Common Flags</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Flag</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>-n &lt;namespace&gt;</code></td>
+                <td class="py-2">Target specific namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>--all-namespaces</code> or <code>-A</code></td>
+                <td class="py-2">All namespaces</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>-l &lt;selector&gt;</code></td>
+                <td class="py-2">Filter by label selector</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>--selector=&lt;selector&gt;</code></td>
+                <td class="py-2">Same as -l</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>--dry-run=client</code></td>
+                <td class="py-2">Preview changes without applying</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>--field-selector=&lt;field&gt;</code></td>
+                <td class="py-2">Filter by field (status.phase=Running)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Essential Commands</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl create -f manifest.yaml</code></td>
+                <td class="py-2">Create resources from file</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl apply -f manifest.yaml</code></td>
+                <td class="py-2">Create or update resources</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl delete -f manifest.yaml</code></td>
+                <td class="py-2">Delete resources from file</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get all -n &lt;ns&gt;</code></td>
+                <td class="py-2">List all resources in namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe &lt;resource&gt; &lt;name&gt;</code></td>
+                <td class="py-2">Detailed info and events</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl logs &lt;pod&gt; --previous</code></td>
+                <td class="py-2">Logs from previous container instance</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl exec -it &lt;pod&gt; -- /bin/sh</code></td>
+                <td class="py-2">Shell into running container</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl cp &lt;pod&gt;:/path ./local</code></td>
+                <td class="py-2">Copy files from pod to local</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl port-forward svc/&lt;name&gt; 8080:80</code></td>
+                <td class="py-2">Forward local port to service</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl top pod</code></td>
+                <td class="py-2">Show CPU/memory usage (needs metrics-server)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl explain &lt;resource&gt;</code></td>
+                <td class="py-2">Show resource documentation</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl api-resources</code></td>
+                <td class="py-2">List all available resources</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 11. MY ARCHITECTURE -->
+        <!-- ============================================== -->
+        <h2 id="architecture">My Architecture</h2>
+        <p>
+          Production-grade k3s homelab running on a repurposed laptop
+          (32GB RAM, 512GB SSD) with Ubuntu Server 24.04 LTS.
+        </p>
+
+        <h3>Stack Overview</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Layer</th>
+                <th class="py-2 text-left font-medium">Technology</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Kubernetes</td>
+                <td class="py-2">k3s (lightweight distribution)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Remote Access</td>
+                <td class="py-2">Tailscale (encrypted VPN)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">GitOps</td>
+                <td class="py-2">ArgoCD (Bootstrap Pattern)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Monitoring</td>
+                <td class="py-2"
+                  >kube-prometheus-stack (Prometheus, Grafana, Alertmanager)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Ingress</td>
+                <td class="py-2">Traefik + Tailscale Operator</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Secret Management</td>
+                <td class="py-2">Sealed Secrets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Storage</td>
+                <td class="py-2">Longhorn (distributed block storage)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Resource Usage</h3>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Component</th>
+                <th class="py-2 pr-4 text-left font-medium">K8s Resource</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Grafana</td>
+                <td class="py-2 pr-4">Deployment</td>
+                <td class="py-2">Stateless web dashboard</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Prometheus</td>
+                <td class="py-2 pr-4">StatefulSet</td>
+                <td class="py-2">Metrics storage with persistent data</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Alertmanager</td>
+                <td class="py-2 pr-4">StatefulSet</td>
+                <td class="py-2">Alert routing with state persistence</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">ArgoCD</td>
+                <td class="py-2 pr-4">Deployment</td>
+                <td class="py-2">GitOps controller</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">All Services</td>
+                <td class="py-2 pr-4">ClusterIP</td>
+                <td class="py-2">Internal communication</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Web UIs</td>
+                <td class="py-2 pr-4">Ingress</td>
+                <td class="py-2">HTTPS routing via Tailscale</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Metrics/Logs</td>
+                <td class="py-2 pr-4">PVC</td>
+                <td class="py-2">Longhorn-backed persistent storage</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Apps</td>
+                <td class="py-2 pr-4">Namespace</td>
+                <td class="py-2"
+                  ><code>monitoring</code>, <code>argocd</code>,
+                  <code>tailscale</code></td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Grafana Dashboards</td>
+                <td class="py-2 pr-4">ConfigMap</td>
+                <td class="py-2">Version-controlled configuration</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4">Credentials</td>
+                <td class="py-2 pr-4">SealedSecret</td>
+                <td class="py-2">Git-safe encrypted secrets</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The GitOps Workflow</h3>
+        <p>
+          With the Bootstrap Pattern, deployments follow a simple flow: push
+          YAML to Git, ArgoCD syncs automatically. No more
+          <code>kubectl apply</code> commands.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Directory</th>
+                <th class="py-2 text-left font-medium">Contents</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>apps/</code></td>
+                <td class="py-2"
+                  >Application manifests (Deployments, Services)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>infrastructure/</code></td>
+                <td class="py-2"
+                  >System manifests (monitoring, ingress, storage)</td
+                >
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>argocd/</code></td>
+                <td class="py-2"
+                  >Application CRDs (pointers to the above folders)</td
+                >
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <details class="mt-4">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >The Bootstrap Pattern Explained</summary
+          >
+          <div class="mt-3 space-y-4 text-sm">
+            <p>
+              The magic happens through a recursive pattern. You apply one file
+              manually. Everything else happens automatically.
+            </p>
+
+            <p><strong>Step 1: Apply bootstrap.yaml once</strong></p>
+            <pre
+              class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"
+            ><code>apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bootstrap
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/your/repo
+    path: argocd/              # Watch this folder
+  destination:
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true</code></pre>
+
+            <p><strong>Step 2: ArgoCD reads argocd/ folder</strong></p>
+            <p>
+              Inside <code>argocd/</code> are more Application CRDs. For
+              example, <code>argocd/monitoring.yaml</code>:
+            </p>
+            <pre
+              class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"
+            ><code>apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/your/repo
+    path: infrastructure/monitoring/  # Points to manifests
+  destination:
+    namespace: monitoring
+  syncPolicy:
+    automated: {}</code></pre>
+
+            <p class="text-muted-foreground">
+              <strong>The result:</strong> Bootstrap creates Applications that
+              create more Applications. You push to Git, ArgoCD syncs
+              everything. No more manual kubectl apply commands.
+            </p>
+          </div>
+        </details>
       </div>
     </div>
   </section>
