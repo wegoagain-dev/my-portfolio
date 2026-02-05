@@ -1524,6 +1524,99 @@ spec:
           </table>
         </div>
 
+        <!-- Using Volumes in Pods -->
+        <h3>
+          Using Volumes in Pods
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Volumes are defined at two levels in a Pod spec. Understanding how they
+          connect is essential for working with storage.
+        </p>
+
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Level</th>
+                <th class="py-2 text-left font-medium">Field</th>
+                <th class="py-2 text-left font-medium">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Pod spec</strong></td>
+                <td class="py-2 pr-4"><code>volumes</code></td>
+                <td class="py-2">Defines the volume source (PVC, ConfigMap, Secret, etc.)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><strong>Container spec</strong></td>
+                <td class="py-2 pr-4"><code>volumeMounts</code></td>
+                <td class="py-2">Mounts the volume into the container at a specific path</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="mt-4">
+          The <code>name</code> field is the link. The volumeMount references a
+          volume by name, and that volume must be defined in the Pod's volumes
+          array.
+        </p>
+
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Complete Example: Multiple Volume Types</summary
+          >
+          <div class="mt-2 space-y-3 text-sm">
+            <pre
+              class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-volume-pod
+spec:
+  # Pod-level: Define the volumes
+  volumes:
+  - name: data                    # Reference name
+    persistentVolumeClaim:
+      claimName: my-pvc           # Actual PVC
+  - name: config                  # Reference name
+    configMap:
+      name: app-config            # Actual ConfigMap
+  - name: secrets                 # Reference name
+    secret:
+      secretName: app-secrets     # Actual Secret
+  - name: cache                   # Reference name
+    emptyDir: {}                  # Ephemeral storage
+
+  containers:
+  - name: app
+    image: myapp:latest
+    # Container-level: Mount the volumes
+    volumeMounts:
+    - name: data                  # Matches volumes[0].name
+      mountPath: /data            # Where it appears in container
+    - name: config                # Matches volumes[1].name
+      mountPath: /etc/config      # Config files here
+      readOnly: true              # ConfigMaps are read-only
+    - name: secrets               # Matches volumes[2].name
+      mountPath: /etc/secrets     # Secrets here
+      readOnly: true              # Secrets are read-only
+    - name: cache                 # Matches volumes[3].name
+      mountPath: /tmp/cache       # Temp storage here</code></pre>
+            <p class="text-muted-foreground">
+              <strong>Key points:</strong> The volume names (<code>data</code>,
+              <code>config</code>, etc.) must match between <code>volumes</code>
+              and <code>volumeMounts</code>. One volume can be mounted in multiple
+              containers, and each container can choose its own mountPath.
+            </p>
+          </div>
+        </details>
+
         <!-- Access Modes -->
         <h3>
           Access Modes
@@ -1927,6 +2020,172 @@ roleRef:
             class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>spec:
   serviceAccountName: my-custom-sa
   automountServiceAccountToken: false  # Disable if not needed</code></pre>
+        </details>
+
+        <!-- RBAC Permissions Reference -->
+        <h3>
+          RBAC Permissions Reference
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Every RBAC rule has three components: <strong>apiGroups</strong> (which API),
+          <strong>resources</strong> (what objects), and <strong>verbs</strong> (what actions).
+          Understanding these helps you create precise permissions without over-privileging.
+        </p>
+
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">apiGroups</th>
+                <th class="py-2 text-left font-medium">Common Resources</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>""</code> (core)</td>
+                <td class="py-2">pods, services, nodes, configmaps, secrets, namespaces</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>apps</code></td>
+                <td class="py-2">deployments, statefulsets, daemonsets, replicasets</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>networking.k8s.io</code></td>
+                <td class="py-2">ingresses, networkpolicies</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>rbac.authorization.k8s.io</code></td>
+                <td class="py-2">roles, clusterroles, rolebindings</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>metrics.k8s.io</code></td>
+                <td class="py-2">nodes, pods (CPU/memory metrics from metrics-server)</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>batch</code></td>
+                <td class="py-2">jobs, cronjobs</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>storage.k8s.io</code></td>
+                <td class="py-2">storageclasses, volumeattachments</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="not-prose mt-4 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Verb</th>
+                <th class="py-2 text-left font-medium">Action</th>
+                <th class="py-2 text-left font-medium">Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>get</code></td>
+                <td class="py-2">Read a single resource by name</td>
+                <td class="py-2">View specific pod details</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>list</code></td>
+                <td class="py-2">List all resources of a type</td>
+                <td class="py-2">Show all pods in namespace</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>watch</code></td>
+                <td class="py-2">Stream changes in real-time</td>
+                <td class="py-2">Controllers watching for changes</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>create</code></td>
+                <td class="py-2">Create new resources</td>
+                <td class="py-2">Deploy new applications</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>update</code></td>
+                <td class="py-2">Modify existing resources</td>
+                <td class="py-2">Change pod labels or annotations</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>patch</code></td>
+                <td class="py-2">Partially modify resources</td>
+                <td class="py-2">Update specific fields only</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>delete</code></td>
+                <td class="py-2">Delete a single resource</td>
+                <td class="py-2">Remove pods or services</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <details class="mt-4">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Common RBAC Patterns</summary
+          >
+          <div class="mt-2 space-y-4 text-sm">
+            <div>
+              <p class="font-medium">Read-only access to pods:</p>
+              <pre
+                class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code>- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]</code></pre>
+            </div>
+            <div>
+              <p class="font-medium">Full admin on deployments:</p>
+              <pre
+                class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code>- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["*"]</code></pre>
+            </div>
+            <div>
+              <p class="font-medium">Metrics access (for monitoring tools):</p>
+              <pre
+                class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code>- apiGroups: ["metrics.k8s.io"]
+  resources: ["nodes", "pods"]
+  verbs: ["get", "list"]</code></pre>
+            </div>
+            <div>
+              <p class="font-medium">ConfigMap reader only:</p>
+              <pre
+                class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code>- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]</code></pre>
+            </div>
+          </div>
+        </details>
+
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >Testing Permissions</summary
+          >
+          <div class="mt-2 space-y-3 text-sm">
+            <p>Always test permissions before deploying. Use <code>kubectl auth can-i</code> to verify:</p>
+            <pre
+              class="bg-secondary overflow-x-auto rounded-md p-3 text-xs"><code># Check your own permissions
+kubectl auth can-i get pods
+kubectl auth can-i create deployments
+
+# Check permissions for a ServiceAccount
+kubectl auth can-i get pods \
+  --as=system:serviceaccount:default:my-sa
+
+# Check permissions in a specific namespace
+kubectl auth can-i list secrets -n production \
+  --as=system:serviceaccount:monitoring:prometheus</code></pre>
+            <p class="text-muted-foreground">
+              <strong>Tip:</strong> If you get "no" or a 403 error, check that the ServiceAccount has the right Role/ClusterRole bound to it.
+            </p>
+          </div>
         </details>
 
         <!-- ============================================== -->
