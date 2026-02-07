@@ -2556,6 +2556,76 @@ spec:
       maxUnavailable: 0  # Max pods unavailable during update</code></pre>
         </details>
 
+        <!-- Horizontal Pod Autoscaler (HPA) -->
+        <h3>
+          Horizontal Pod Autoscaler (HPA)
+          <span
+            class="ml-2 rounded bg-blue-500/20 px-[6px] py-[2px] text-xs text-blue-400"
+            >CKA</span
+          >
+        </h3>
+        <p>
+          Automatically scales the number of Pods in a Deployment, StatefulSet, or
+          ReplicaSet based on observed metrics like CPU or memory utilization. HPA
+          is essential for production workloads to handle traffic spikes without
+          manual intervention. Requires metrics-server to be installed in the cluster.
+        </p>
+        <div class="not-prose overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b">
+                <th class="py-2 pr-4 text-left font-medium">Command</th>
+                <th class="py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl get hpa</code></td>
+                <td class="py-2">List HPAs and current metrics</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl describe hpa &lt;name&gt;</code></td>
+                <td class="py-2">Show scaling events and conditions</td>
+              </tr>
+              <tr class="border-border/50 border-b">
+                <td class="py-2 pr-4"><code>kubectl top pod</code></td>
+                <td class="py-2">View CPU/memory usage (needs metrics-server)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="mt-2">
+          <summary
+            class="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+            >HPA Example</summary
+          >
+          <pre
+            class="bg-secondary mt-2 overflow-x-auto rounded-md p-3 text-xs"><code>apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80</code></pre>
+        </details>
+
         <!-- ============================================== -->
         <!-- 10. QUICK REFERENCE -->
         <!-- ============================================== -->

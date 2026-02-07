@@ -10,6 +10,7 @@ import rehypeExpressiveCode from 'rehype-expressive-code'
 import rehypeExternalLinks from 'rehype-external-links'
 import rehypeKatex from 'rehype-katex'
 import rehypeShiki from '@shikijs/rehype'
+import rehypeMermaid from 'rehype-mermaid'
 import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
 
@@ -44,6 +45,7 @@ export default defineConfig({
       ],
       rehypeHeadingIds,
       rehypeKatex,
+      rehypeMermaid,
       [
         rehypeExpressiveCode,
         {
@@ -69,7 +71,7 @@ export default defineConfig({
             borderColor: 'oklch(var(--border))',
             codeFontFamily: 'var(--font-mono)',
             codePaddingBlock: '1rem',
-            codePaddingInline: '0',
+            codePaddingInline: '1.5rem',
             codeBackground:
               'color-mix(in oklab, oklch(var(--secondary)) 20%, transparent)',
             frames: {
