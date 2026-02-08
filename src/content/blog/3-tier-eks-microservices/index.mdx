@@ -1,10 +1,11 @@
 ---
-title: 'Understanding Three Tier Microservices on AWS EKS'
-description: 'Lets dive into the architecture and components of this app on AWS EKS'
-tags: ['AWS', 'Kubernetes', 'Terraform', 'ArgoCD', 'GitHub Actions']
-date: 2025-11-20
-image: './images/eks-devopsquiz.png'
+title: 'From Terraform to GitOps: Deploying a Three-Tier Microservices on EKS'
+description: 'A practical guide to deploying microservices on AWS EKS with GitOps automation'
+tags: ['AWS', 'Kubernetes', 'Terraform', 'ArgoCD', 'GitHub Actions', 'GitOps']
+date: 2026-01-20
 ---
+
+![](./images/eks-devopsquiz.png)
 
 ## About the Project
 
@@ -22,12 +23,12 @@ If you want to see the code, it's all on [GitHub](https://github.com/wegoagain-d
 
 ## Architecture & Design Decisions
 
-Let me explain why I made certain choices. Some were obvious, others I learned the hard way.
+Let me explain why I made certain choices. Some were obvious, others I learnt the hard way.
 
 <details open>
 <summary><strong>Why Terraform for Everything?</strong></summary>
 
-I actually started with `eksctl` for the cluster. Seemed easier at first. But then I had infrastructure in two places: some in eksctl YAML, some in Terraform. It got confusing fast. 
+I actually started with `eksctl` for the cluster. Seemed easier at first. But then I had infrastructure in two places: some in eksctl YAML, some in Terraform. It got confusing fast.
 
 Moving everything to Terraform meant one source of truth. The VPC, EKS cluster, RDS, ECR repos, IAM roles, all defined in one place. Now I can spin up the whole environment with `terraform apply` and tear it down with `terraform destroy`. No more "oh crap I forgot to delete that security group" moments.
 
@@ -36,9 +37,9 @@ Moving everything to Terraform meant one source of truth. The VPC, EKS cluster, 
 <details>
 <summary><strong>Why Managed Node Groups?</strong></summary>
 
-EKS gives you three compute options: self-managed nodes, managed node groups, or Fargate. 
+EKS gives you three compute options: self-managed nodes, managed node groups, or Fargate.
 
-I picked managed node groups because they hit the sweet spot. AWS handles the boring stuff: AMI updates, node lifecycle, patching. But I still control instance types and scaling. 
+I picked managed node groups because they hit the sweet spot. AWS handles the boring stuff: AMI updates, node lifecycle, patching. But I still control instance types and scaling.
 
 Fargate would be simpler (no nodes to manage at all) but it costs more for sustained workloads. Self-managed nodes give you full control but that's overkill for this project. I don't want to be SSHing into nodes to update packages.
 
@@ -271,7 +272,7 @@ With IRSA, each pod only gets the permissions attached to its specific ServiceAc
 ```hcl
 resource "aws_iam_role" "external_secrets" {
   name = "devops-quiz-external-secrets-role"
-  
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -404,7 +405,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials_version" {
 ```hcl
 resource "aws_iam_role" "external_secrets" {
   name = "devops-quiz-external-secrets-role"
-  
+
   assume_role_policy = jsonencode({
     # Trust policy allows only the ESO ServiceAccount to assume this role
     Version = "2012-10-17"
@@ -961,7 +962,7 @@ Going through this project taught me a few things:
 
 **The App of Apps pattern with sync waves is the right way to do GitOps.** Initially, I had Terraform installing Helm charts for ALB Controller, External Secrets, and Prometheus. It worked, but it was messy. Terraform would hang trying to connect to a cluster that wasn't ready yet, and I had infrastructure concerns mixed with application deployment. Refactoring to the App of Apps pattern - where Terraform only creates infrastructure and ArgoCD, then a single kubectl apply bootstraps everything via a root Application with sync waves - made everything cleaner. Now Terraform finishes quickly, and GitOps drives the entire platform and application lifecycle with guaranteed ordering.
 
-**OIDC and IRSA are game-changers for security.** Understanding the difference between GitHub OIDC (for CI/CD auth) and EKS OIDC (for pod auth via IRSA) was crucial. GitHub OIDC eliminates long-lived AWS credentials in GitHub Secrets. IRSA eliminates the need to give nodes broad IAM permissions. Both use short-lived tokens and the principle of least privilege. The key insight: OIDC is the authentication mechanism (proves identity), IRSA is the authorization feature (proves what you're allowed to do).
+**OIDC and IRSA are game-changers for security.** Understanding the difference between GitHub OIDC (for CI/CD auth) and EKS OIDC (for pod auth via IRSA) was crucial. GitHub OIDC eliminates long-lived AWS credentials in GitHub Secrets. IRSA eliminates the need to give nodes broad IAM permissions. Both use short-lived tokens and the principle of least privilege. The key insight: OIDC is the authentication mechanism (proves identity), IRSA is the authorisation feature (proves what you're allowed to do).
 
 **Separate concerns: Terraform creates IAM, GitOps creates pods.** For IRSA to work, you need both the IAM role (Terraform's job) and the ServiceAccount with the role annotation (GitOps's job). The clean separation is: Terraform creates the role with the trust policy that references the OIDC provider, hardcodes the role ARN in GitOps manifests, then ArgoCD creates the ServiceAccounts and pods. This keeps infrastructure (IAM, OIDC providers) separate from workload configuration.
 
