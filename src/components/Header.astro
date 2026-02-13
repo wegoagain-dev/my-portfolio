@@ -2,20 +2,23 @@
 import Link from '@/components/Link.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import { NAV_LINKS, SITE } from '@/consts'
+import { Icon } from 'astro-icon/components'
+
+// Split nav links - first 2 visible on mobile, rest in menu
+const visibleLinks = NAV_LINKS.slice(0, 2)
+const menuLinks = NAV_LINKS.slice(2)
 ---
 
-<div>
+<header class="relative">
   <div
     class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3"
   >
     <Link href="/" class="flex shrink-0 items-center justify-center">
-      <span
-        class="h-full text-lg leading-none font-medium"
-        >{SITE.title}</span
-      >
+      <span class="h-full text-lg leading-none font-medium">{SITE.title}</span>
     </Link>
     <div class="flex items-center gap-4">
-      <nav class="flex items-center gap-4 text-sm sm:gap-6">
+      {/* Desktop nav - show all links */}
+      <nav class="hidden items-center gap-4 text-sm sm:flex sm:gap-6">
         {
           NAV_LINKS.map((item) => (
             <Link
@@ -27,7 +30,149 @@ import { NAV_LINKS, SITE } from '@/consts'
           ))
         }
       </nav>
-      <ThemeToggle transition:persist />
+
+      {/* Mobile nav - hybrid approach */}
+      <nav class="flex items-center gap-4 text-sm sm:hidden">
+        {
+          visibleLinks.map((item) => (
+            <Link
+              href={item.href}
+              class="text-foreground/60 hover:text-foreground capitalize transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))
+        }
+      </nav>
+
+      <ThemeToggle transition:persist class="hidden sm:flex" />
+
+      {/* Mobile menu button */}
+      <button
+        id="mobile-menu-trigger"
+        class="flex h-9 w-9 items-center justify-center rounded-md text-foreground/60 hover:bg-muted hover:text-foreground sm:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <Icon name="lucide:menu" class="h-5 w-5" id="menu-icon-open" />
+        <Icon name="lucide:x" class="h-5 w-5 hidden" id="menu-icon-close" />
+      </button>
     </div>
   </div>
-</div>
+
+  {/* Mobile dropdown menu */}
+  <div
+    id="mobile-menu"
+    class="mobile-dropdown hidden sm:hidden border-t border-border"
+  >
+    <div class="mx-auto max-w-3xl px-4 py-3">
+      <nav class="flex flex-col">
+        {
+          menuLinks.map((item) => (
+            <Link
+              href={item.href}
+              class="py-2.5 text-foreground hover:text-foreground/70 capitalize transition-colors"
+              data-mobile-nav-link
+            >
+              {item.label}
+            </Link>
+          ))
+        }
+        <button
+          id="mobile-theme-toggle"
+          class="py-2.5 text-foreground hover:text-foreground/70 transition-colors text-left"
+          aria-label="Toggle theme"
+        >
+          <Icon name="lucide:sun" class="size-5 theme-icon-light" />
+          <Icon name="lucide:moon" class="size-5 theme-icon-dark hidden" />
+        </button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .mobile-dropdown {
+    background-color: oklch(var(--muted));
+  }
+  
+  :global([data-theme='dark']) .theme-icon-light {
+    display: none;
+  }
+  :global([data-theme='dark']) .theme-icon-dark {
+    display: block;
+  }
+  :global([data-theme='light']) .theme-icon-light {
+    display: block;
+  }
+  :global([data-theme='light']) .theme-icon-dark {
+    display: none;
+  }
+</style>
+
+<script>
+  function initMobileMenu() {
+    const trigger = document.getElementById('mobile-menu-trigger')
+    const menu = document.getElementById('mobile-menu')
+    const iconOpen = document.getElementById('menu-icon-open')
+    const iconClose = document.getElementById('menu-icon-close')
+    const navLinks = document.querySelectorAll('[data-mobile-nav-link]')
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle')
+
+    function toggleMenu() {
+      const isHidden = menu?.classList.contains('hidden')
+      
+      if (isHidden) {
+        menu?.classList.remove('hidden')
+        iconOpen?.classList.add('hidden')
+        iconClose?.classList.remove('hidden')
+        trigger?.setAttribute('aria-expanded', 'true')
+      } else {
+        menu?.classList.add('hidden')
+        iconOpen?.classList.remove('hidden')
+        iconClose?.classList.add('hidden')
+        trigger?.setAttribute('aria-expanded', 'false')
+      }
+    }
+
+    function closeMenu() {
+      menu?.classList.add('hidden')
+      iconOpen?.classList.remove('hidden')
+      iconClose?.classList.add('hidden')
+      trigger?.setAttribute('aria-expanded', 'false')
+    }
+
+    function handleMobileThemeToggle() {
+      const element = document.documentElement
+      const currentTheme = element.getAttribute('data-theme')
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark'
+
+      element.classList.add('[&_*]:transition-none')
+      element.setAttribute('data-theme', newTheme)
+      window.getComputedStyle(element).getPropertyValue('opacity')
+
+      requestAnimationFrame(() => {
+        element.classList.remove('[&_*]:transition-none')
+      })
+
+      localStorage.setItem('theme', newTheme)
+    }
+
+    trigger?.addEventListener('click', toggleMenu)
+    mobileThemeToggle?.addEventListener('click', handleMobileThemeToggle)
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', closeMenu)
+    })
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu?.classList.contains('hidden')) {
+        closeMenu()
+      }
+    })
+  }
+
+  initMobileMenu()
+  document.addEventListener('astro:after-swap', initMobileMenu)
+</script>

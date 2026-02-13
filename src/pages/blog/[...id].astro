@@ -67,7 +67,7 @@ const tocSections = await getTOCSections(currentPostId)
     )
   }
   {
-    headings?.length > 0 &&
+    headings?.length >= 4 &&
       !(
         isCurrentSubpost &&
         headings.length === 1 &&
@@ -187,7 +187,7 @@ const tocSections = await getTOCSections(currentPostId)
     </section>
 
     {
-      tocSections.length > 0 && (
+      tocSections.length >= 4 && (
         <TOCSidebar sections={tocSections} currentPostId={currentPostId} />
       )
     }

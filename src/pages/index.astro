@@ -98,11 +98,11 @@ const projects = (await getAllProjects()).slice(0, 2)
   </section>
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Latest projects</h2>
-    <ul class="flex flex-col gap-y-4">
+    <ul class="flex flex-col divide-y divide-border">
       {
         projects.map((project) => (
-          <li>
-            <ProjectCard project={project} />
+          <li class="py-3">
+            <ProjectCard project={project} compact />
           </li>
         ))
       }
@@ -121,7 +121,7 @@ const projects = (await getAllProjects()).slice(0, 2)
   </section>
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Latest posts</h2>
-    <ul class="flex flex-col gap-y-4">
+    <ul class="flex flex-col divide-y divide-border">
       {
         blog.map((post) => (
           <li>

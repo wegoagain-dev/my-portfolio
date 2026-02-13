@@ -1,70 +1,55 @@
 ---
 import Link from '@/components/Link.astro'
-import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
-import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 
 interface Props {
   project: CollectionEntry<'projects'>
+  compact?: boolean
 }
 
-const { project } = Astro.props
+const { project, compact = false } = Astro.props
 ---
 
-<div
-  class="not-prose rounded-md border p-4 transition-colors duration-300 ease-in-out hover:bg-secondary/30"
+<Link
+  href={project.data.link}
+  class="group not-prose flex flex-col gap-1 no-underline"
+  external
 >
-  <Link
-    href={project.data.link}
-    class="group flex flex-col gap-4 sm:flex-row"
-    external
-  >
+  {
+    !compact && project.data.image && (
+      <div class="mb-3 overflow-hidden rounded-lg">
+        <Image
+          src={project.data.image}
+          alt={project.data.name}
+          width={1200}
+          height={630}
+          class="w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+        />
+      </div>
+    )
+  }
+  <div class="flex items-start justify-between gap-4">
+    <h3 class="font-medium group-hover:underline group-hover:decoration-foreground/50 group-hover:underline-offset-4">
+      {project.data.name}
+    </h3>
     {
-      project.data.image && (
-        <div class="w-full sm:max-w-[200px] sm:flex-shrink-0">
-          <Image
-            src={project.data.image}
-            alt={project.data.name}
-            width={1200}
-            height={630}
-            class="rounded-sm object-cover grayscale transition-all group-hover:grayscale-0"
-          />
-        </div>
+      project.data.startDate && (
+        <span class="text-muted-foreground shrink-0 text-sm">
+          {formatDate(project.data.startDate)}
+        </span>
       )
     }
-    <div class="flex-grow">
-      <h3 class="mb-1 text-lg font-semibold">
-        {project.data.name}
-      </h3>
-      <p class="text-muted-foreground mb-2 text-sm">
-        {project.data.description}
+  </div>
+  <p class="text-muted-foreground text-sm">
+    {project.data.description}
+  </p>
+  {
+    project.data.tags && (
+      <p class="text-muted-foreground/70 text-xs">
+        {project.data.tags.join(' · ')}
       </p>
-      {
-        project.data.startDate && (
-          <p class="text-muted-foreground/70 mb-2 flex items-center gap-x-1.5 text-xs">
-            <span class="flex items-center gap-x-1.5">
-              <Icon name="lucide:calendar" class="size-3" />
-              <span>
-                {formatDate(project.data.startDate)}
-                {project.data.endDate
-                  ? ` → ${formatDate(project.data.endDate)}`
-                  : ' → Present'}
-              </span>
-            </span>
-          </p>
-        )
-      }
-      {
-        project.data.tags && (
-          <div class="flex flex-wrap gap-2">
-            {project.data.tags.map((tag: string) => (
-              <Badge variant="muted">{tag}</Badge>
-            ))}
-          </div>
-        )
-      }
-    </div>
-  </Link>
-</div>
+    )
+  }
+</Link>

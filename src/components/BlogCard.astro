@@ -1,14 +1,10 @@
 ---
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import {
   getCombinedReadingTime,
   getSubpostCount,
   isSubpost,
 } from '@/lib/data-utils'
 import { formatDate } from '@/lib/utils'
-import { Icon } from 'astro-icon/components'
-import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import Link from './Link.astro'
 
@@ -22,62 +18,18 @@ const readTime = await getCombinedReadingTime(entry.id)
 const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 ---
 
-<div
-  class="not-prose rounded-md border p-4 transition-colors duration-300 ease-in-out hover:bg-secondary/30"
+<Link
+  href={`/${entry.collection}/${entry.id}`}
+  class="group not-prose flex flex-col gap-1 py-3 no-underline"
 >
-  <Link
-    href={`/${entry.collection}/${entry.id}`}
-    class="flex flex-col gap-4 sm:flex-row"
-  >
-    {
-      entry.data.image && (
-        <div class="w-full sm:max-w-[200px] sm:flex-shrink-0">
-          <Image
-            src={entry.data.image}
-            alt={entry.data.title}
-            width={1200}
-            height={630}
-            class="rounded-sm object-cover grayscale"
-          />
-        </div>
-      )
-    }
-
-    <div class="flex-grow">
-      <h3 class="mb-1 text-lg font-semibold">{entry.data.title}</h3>
-      <p class="text-muted-foreground mb-2 text-sm">{entry.data.description}</p>
-
-      <div
-        class="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-2 text-xs"
-      >
-        <span>{formattedDate}</span>
-        <Separator orientation="vertical" className="h-4!" />
-        <span>{readTime}</span>
-        {
-          subpostCount > 0 && (
-            <>
-              <Separator orientation="vertical" className="h-4!" />
-              <span class="flex items-center gap-1">
-                <Icon name="lucide:file-text" class="size-3" />
-                {subpostCount} subpost{subpostCount === 1 ? '' : 's'}
-              </span>
-            </>
-          )
-        }
-      </div>
-
-      {
-        entry.data.tags && (
-          <div class="flex flex-wrap gap-2">
-            {entry.data.tags.map((tag) => (
-              <Badge variant="muted" className="flex items-center gap-x-1">
-                <Icon name="lucide:hash" class="size-3" />
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )
-      }
-    </div>
-  </Link>
-</div>
+  <div class="flex items-start justify-between gap-4">
+    <h3 class="font-medium group-hover:underline group-hover:decoration-foreground/50 group-hover:underline-offset-4">{entry.data.title}</h3>
+    <span class="text-muted-foreground shrink-0 text-sm">{formattedDate}</span>
+  </div>
+  <div class="flex items-center justify-between gap-4">
+    <p class="text-muted-foreground text-sm">{entry.data.description}</p>
+    <span class="text-muted-foreground/70 shrink-0 text-xs">
+      {readTime}{subpostCount > 0 && ` · ${subpostCount} parts`}
+    </span>
+  </div>
+</Link>

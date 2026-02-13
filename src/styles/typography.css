@@ -63,7 +63,7 @@
     }
 
     :where(a):not(:where(.not-prose, .not-prose *)) {
-      @apply text-foreground decoration-muted-foreground hover:decoration-foreground font-medium break-words underline underline-offset-[3px] transition-colors;
+      @apply text-foreground hover:text-foreground/70 decoration-foreground/30 hover:decoration-foreground/50 font-medium break-words underline underline-offset-[3px] transition-colors;
     }
 
     :where(strong):not(:where(.not-prose, .not-prose *)) {
@@ -134,8 +134,8 @@
     }
 
     :where(img, video, figure, .expressive-code):not(
-        :where(.not-prose, .not-prose *)
-      ) {
+      :where(.not-prose, .not-prose *)
+    ) {
       @apply mx-auto my-6;
     }
 
