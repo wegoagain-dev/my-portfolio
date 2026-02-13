@@ -9,7 +9,7 @@ import Layout from '@/layouts/Layout.astro'
 import { getAllProjects, getRecentPosts } from '@/lib/data-utils'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
-const projects = (await getAllProjects()).slice(0, 2)
+const projects = (await getAllProjects()).slice(0, 1)
 ---
 
 <Layout class="max-w-3xl">
@@ -21,98 +21,33 @@ const projects = (await getAllProjects()).slice(0, 2)
       </h1>
     </div>
     <div class="p-6 pt-0">
-      <p class="text-foreground mb-4 text-sm">
-        A DevOps Engineer that likes building reliable infrastructure and
-        scalable systems. Currently deep into AWS and Kubernetes also exploring
-        how AI can make infrastructure automation efficient. I write about what
-        I'm learning and building along the way.
+      <p class="text-foreground text-sm">
+        I'm a DevOps Engineer that likes building reliable infrastructure and
+        scalable systems. Currently deep into AWS and Kubernetes, also exploring
+        how AI can make infrastructure automation more efficient.
       </p>
-      <div class="flex flex-wrap gap-3 sm:gap-4">
-        <!-- Foundations -->
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"
-          alt="Linux"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg"
-          alt="Bash"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
-          alt="Git"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-          alt="GitHub"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0 dark:invert"
-        />
-        <!-- Cloud & IaC -->
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
-          alt="AWS"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg"
-          alt="Terraform"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <!-- Containers & Orchestration -->
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
-          alt="Docker"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
-          alt="Kubernetes"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/argocd/argocd-original.svg"
-          alt="ArgoCD"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <!-- Observability -->
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg"
-          alt="Prometheus"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg"
-          alt="Grafana"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-        <!-- Languages -->
-        <img
-          src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
-          alt="Python"
-          class="size-8 opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-        />
-      </div>
+      <p class="text-foreground mt-3 text-sm">
+        This is where I share what I'm learning and building along the way.
+      </p>
     </div>
   </section>
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest projects</h2>
-    <ul class="flex flex-col divide-y divide-border">
+    <h2 class="text-2xl font-medium">Featured work</h2>
+    <ul class="flex flex-col gap-y-4">
       {
         projects.map((project) => (
-          <li class="py-3">
-            <ProjectCard project={project} compact />
+          <li>
+            <ProjectCard project={project} />
           </li>
         ))
       }
     </ul>
     <div class="flex justify-center">
       <Link
-        href="/projects"
+        href="/work"
         class={buttonVariants({ variant: 'ghost' }) + ' group'}
       >
-        See all projects <span
+        See all work <span
           class="ml-1.5 transition-transform group-hover:translate-x-1"
           >&rarr;</span
         >
@@ -121,7 +56,7 @@ const projects = (await getAllProjects()).slice(0, 2)
   </section>
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Latest posts</h2>
-    <ul class="flex flex-col divide-y divide-border">
+    <ul class="flex flex-col gap-y-4">
       {
         blog.map((post) => (
           <li>

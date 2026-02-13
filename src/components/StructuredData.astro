@@ -1,0 +1,73 @@
+---
+import { SITE } from '@/consts'
+
+interface Props {
+  type: 'person' | 'website' | 'blogPosting'
+  post?: {
+    title: string
+    description: string
+    date: Date
+    url: string
+    image?: string
+  }
+}
+
+const { type, post } = Astro.props
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.author,
+  url: SITE.href,
+  sameAs: [
+    'https://github.com/wegoagain-dev',
+    'https://www.linkedin.com/in/tawfiq-a-379746198/',
+    'https://x.com/wegoagain_dev',
+  ],
+  jobTitle: 'DevOps Engineer',
+  description: SITE.description,
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.title,
+  url: SITE.href,
+  description: SITE.description,
+  author: {
+    '@type': 'Person',
+    name: SITE.author,
+  },
+  inLanguage: SITE.locale,
+}
+
+const blogPostingSchema = post
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.description,
+      datePublished: post.date.toISOString(),
+      url: post.url,
+      author: {
+        '@type': 'Person',
+        name: SITE.author,
+      },
+      publisher: {
+        '@type': 'Person',
+        name: SITE.author,
+      },
+      image: post.image || `${SITE.href}/static/1200x630.png`,
+      inLanguage: SITE.locale,
+    }
+  : null
+
+const schema =
+  type === 'person'
+    ? personSchema
+    : type === 'website'
+      ? websiteSchema
+      : blogPostingSchema
+---
+
+{schema && <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />}

@@ -24,14 +24,22 @@ const { class: className } = Astro.props
     <slot name="head" />
   </Head>
   <body class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:border focus:bg-background focus:px-4 focus:py-2"
+    >
+      Skip to main content
+    </a>
     <header
-      class="bg-background/50 sticky top-0 z-50 divide-y backdrop-blur-sm xl:divide-none"
+      id="main-header"
+      class="sticky top-0 z-50 divide-y transition-all duration-300 xl:divide-none"
     >
       <Header />
       <slot name="subposts-navigation" />
       <slot name="table-of-contents" />
     </header>
     <main
+      id="main-content"
       class={cn('w-full mx-auto flex grow flex-col gap-y-6 px-4', className)}
     >
       <slot />
@@ -39,3 +47,25 @@ const { class: className } = Astro.props
     <Footer />
   </body>
 </html>
+
+<script>
+  function initHeaderScroll() {
+    const header = document.getElementById('main-header')
+    if (!header) return
+
+    const updateHeader = () => {
+      if (window.scrollY > 0) {
+        header.classList.add('bg-background/50', 'backdrop-blur-sm')
+        header.classList.remove('bg-transparent')
+      } else {
+        header.classList.remove('bg-background/50', 'backdrop-blur-sm')
+        header.classList.add('bg-transparent')
+      }
+    }
+
+    window.addEventListener('scroll', updateHeader, { passive: true })
+    updateHeader()
+  }
+
+  document.addEventListener('astro:page-load', initHeaderScroll)
+</script>
