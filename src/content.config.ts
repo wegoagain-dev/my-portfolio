@@ -22,6 +22,11 @@ const projects = defineCollection({
     z.object({
       name: z.string(),
       description: z.string(),
+      impact: z.string().optional(),
+      scale: z.string().optional(),
+      availability: z.string().optional(),
+      cost: z.string().optional(),
+      keyLearning: z.string().optional(),
       tags: z.array(z.string()),
       image: image(),
       link: z.string().url(),

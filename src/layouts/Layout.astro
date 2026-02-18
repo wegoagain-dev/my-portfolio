@@ -26,7 +26,7 @@ const { class: className } = Astro.props
   <body class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:border focus:bg-background focus:px-4 focus:py-2"
+      class="focus:bg-background sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:border focus:px-4 focus:py-2"
     >
       Skip to main content
     </a>
@@ -50,6 +50,10 @@ const { class: className } = Astro.props
 
 <script>
   function initHeaderScroll() {
+    if (typeof window.__headerScrollCleanup === 'function') {
+      window.__headerScrollCleanup()
+    }
+
     const header = document.getElementById('main-header')
     if (!header) return
 
@@ -65,6 +69,10 @@ const { class: className } = Astro.props
 
     window.addEventListener('scroll', updateHeader, { passive: true })
     updateHeader()
+
+    window.__headerScrollCleanup = () => {
+      window.removeEventListener('scroll', updateHeader)
+    }
   }
 
   document.addEventListener('astro:page-load', initHeaderScroll)

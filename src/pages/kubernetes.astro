@@ -13,68 +13,81 @@ import Layout from '@/layouts/Layout.astro'
       <div class="prose mb-8">
         <h1 class="mb-2">Kubernetes</h1>
         <p class="text-muted-foreground mt-0">
-          Oh you found my Kubernetes page. Here is where I'll be noting down
-          what I've been learning. At least you'll leave with some new
-          knowledge.
+          This is my practical Kubernetes handbook. It is organised so you can
+          either learn progressively or jump straight to troubleshooting and
+          operations topics.
         </p>
 
-        <!-- Anchor Navigation -->
-        <div class="not-prose my-6 flex flex-wrap gap-2">
-          <a
-            href="#core"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Core</a
-          >
-          <a
-            href="#config"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Config</a
-          >
-          <a
-            href="#observability"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Observability</a
-          >
-          <a
-            href="#networking"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Networking</a
-          >
-          <a
-            href="#storage"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Storage</a
-          >
-          <a
-            href="#scheduling"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Scheduling</a
-          >
-          <a
-            href="#security"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Security</a
-          >
-          <a
-            href="#cluster-admin"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Cluster Admin</a
-          >
-          <a
-            href="#app-dev"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >App Dev</a
-          >
-          <a
-            href="#quick-reference"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Quick Ref</a
-          >
-          <a
-            href="#architecture"
-            class="bg-secondary hover:bg-secondary/80 rounded-md px-3 py-1 text-sm transition-colors"
-            >Architecture</a
-          >
+        <div class="not-prose my-6 grid gap-3 sm:grid-cols-3">
+          <article class="bg-secondary/40 rounded-lg border p-4">
+            <h2 class="text-sm font-semibold">Beginner Track</h2>
+            <p class="text-muted-foreground mt-1 text-xs">
+              Start with fundamentals, then move to config and networking.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <a
+                href="#core"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Core</a
+              >
+              <a
+                href="#config"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Config</a
+              >
+              <a
+                href="#networking"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Networking</a
+              >
+            </div>
+          </article>
+          <article class="bg-secondary/40 rounded-lg border p-4">
+            <h2 class="text-sm font-semibold">Intermediate Track</h2>
+            <p class="text-muted-foreground mt-1 text-xs">
+              Build reliability with observability, storage, and scheduling.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <a
+                href="#observability"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Observability</a
+              >
+              <a
+                href="#storage"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Storage</a
+              >
+              <a
+                href="#scheduling"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Scheduling</a
+              >
+            </div>
+          </article>
+          <article class="bg-secondary/40 rounded-lg border p-4">
+            <h2 class="text-sm font-semibold">Advanced Track</h2>
+            <p class="text-muted-foreground mt-1 text-xs">
+              Focus on security hardening, administration, and architecture.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <a
+                href="#security"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Security</a
+              >
+              <a
+                href="#cluster-admin"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Cluster Admin</a
+              >
+              <a
+                href="#architecture"
+                class="bg-secondary hover:bg-secondary/80 rounded-md px-2.5 py-1 text-xs transition-colors"
+                >Architecture</a
+              >
+            </div>
+          </article>
         </div>
 
         <!-- ============================================== -->
@@ -856,7 +869,7 @@ spec:
         </h3>
         <p>
           Choose the right controller based on your application's requirements.
-          Each controller optimizes for different use cases.
+          Each controller optimises for different use cases.
         </p>
         <div class="not-prose overflow-x-auto">
           <table class="w-full text-sm">
@@ -3221,7 +3234,7 @@ spec:
         </h3>
         <p>
           Automatically scales the number of Pods in a Deployment, StatefulSet, or
-          ReplicaSet based on observed metrics like CPU or memory utilization. HPA
+          ReplicaSet based on observed metrics like CPU or memory utilisation. HPA
           is essential for production workloads to handle traffic spikes without
           manual intervention. Requires metrics-server to be installed in the cluster.
         </p>

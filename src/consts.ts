@@ -7,7 +7,7 @@ export const SITE: Site = {
   href: 'https://wegoagain.dev',
   author: 'Tawfiq',
   locale: 'en-GB',
-  featuredPostCount: 3,
+  featuredPostCount: 2,
   postsPerPage: 10,
 }
 
@@ -29,6 +29,11 @@ export const NAV_LINKS: SocialLink[] = [
     label: 'about',
   },
 ]
+
+export const HIRE_LINK: SocialLink = {
+  href: 'mailto:tawfiqrahman00@gmail.com?subject=DevOps%20Opportunity',
+  label: 'hire me',
+}
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {

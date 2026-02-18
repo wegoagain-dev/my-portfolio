@@ -7,9 +7,15 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
-    "prettier": "prettier --write **/*.{ts,tsx,css,astro} --ignore-path .gitignore"
+    "prettier": "prettier --write **/*.{ts,tsx,css,astro} --ignore-path .gitignore",
+    "reinstall": "rm -rf node_modules .astro dist && npm ci"
+  },
+  "engines": {
+    "node": ">=20 <23",
+    "npm": ">=10 <12"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

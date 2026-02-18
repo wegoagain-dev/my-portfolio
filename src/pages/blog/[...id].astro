@@ -1,6 +1,5 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PostHead from '@/components/PostHead.astro'
 import PostNavigation from '@/components/PostNavigation.astro'
 import SubpostsHeader from '@/components/SubpostsHeader.astro'
@@ -229,26 +228,44 @@ const tocSections = await getTOCSections(currentPostId)
   </Button>
 
   <script>
-    document.addEventListener('astro:page-load', () => {
+    function initScrollToTop() {
+      if (typeof window.__scrollToTopCleanup === 'function') {
+        window.__scrollToTopCleanup()
+      }
+
       const scrollToTopButton = document.getElementById('scroll-to-top')
       const footer = document.querySelector('footer')
 
-      if (scrollToTopButton && footer) {
-        scrollToTopButton.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        })
-
-        window.addEventListener('scroll', () => {
-          const footerRect = footer.getBoundingClientRect()
-          const isFooterVisible = footerRect.top <= window.innerHeight
-
-          scrollToTopButton.classList.toggle(
-            'hidden',
-            window.scrollY <= 300 || isFooterVisible,
-          )
-        })
+      if (!scrollToTopButton || !footer) {
+        window.__scrollToTopCleanup = undefined
+        return
       }
-    })
+
+      const handleClick = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+
+      const handleScroll = () => {
+        const footerRect = footer.getBoundingClientRect()
+        const isFooterVisible = footerRect.top <= window.innerHeight
+
+        scrollToTopButton.classList.toggle(
+          'hidden',
+          window.scrollY <= 300 || isFooterVisible,
+        )
+      }
+
+      scrollToTopButton.addEventListener('click', handleClick)
+      window.addEventListener('scroll', handleScroll, { passive: true })
+      handleScroll()
+
+      window.__scrollToTopCleanup = () => {
+        scrollToTopButton.removeEventListener('click', handleClick)
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }
+
+    document.addEventListener('astro:page-load', initScrollToTop)
   </script>
 </Layout>
 
