@@ -30,11 +30,6 @@ export const NAV_LINKS: SocialLink[] = [
   },
 ]
 
-export const HIRE_LINK: SocialLink = {
-  href: 'mailto:tawfiqrahman00@gmail.com?subject=DevOps%20Opportunity',
-  label: 'hire me',
-}
-
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     href: 'https://github.com/wegoagain-dev',
