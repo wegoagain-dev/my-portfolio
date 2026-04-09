@@ -36,7 +36,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'GitHub',
   },
   {
-    href: 'https://www.linkedin.com/in/tawfiq-a-379746198/',
+    href: 'https://www.linkedin.com/in/tawfiq-r-379746198/',
     label: 'LinkedIn',
   },
   {
