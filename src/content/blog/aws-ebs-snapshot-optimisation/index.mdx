@@ -2,14 +2,13 @@
 title: 'Automated EBS Snapshot Optimisation'
 description: 'Using AWS Lambda to automatically find and delete stale EBS snapshots.'
 date: 2025-11-10
+image: './images/lambda-ebs.png'
 tags: ['AWS', 'Lambda', 'Boto3', 'EventBridge']
 draft: true
 ---
 
 ## The Plan and Architecture
 The core of this architecture is an AWS Lambda function, which acts as our automated 'robot' running Python code with the boto3 library. This function interacts directly with the AWS API to identify and clean up stale EBS snapshots. It works by listing all existing snapshots and comparing them against active EC2 instances; any snapshot belonging to a deleted instance is flagged and automatically removed to prevent unnecessary costs.
-
-![alt text](./images/lambda-ebs.png)
 
 ---
 
