@@ -24,14 +24,15 @@ const projects = (await getAllProjects()).slice(0, 2)
     </div>
     <div class="p-6 pt-0">
       <p class="text-foreground text-sm">
-        I'm a DevOps Engineer that likes building reliable infrastructure and
-        scalable systems. Currently deep into AWS and Kubernetes, also exploring
-        how AI can make infrastructure automation more efficient.
+        I'm an IT engineer working across Microsoft 365, identity, endpoint
+        management and security. I build cloud infrastructure with Terraform,
+        Kubernetes and GitHub Actions, and I'm currently expanding my work
+        across Azure and AI automation.
       </p>
     </div>
   </section>
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Featured work</h2>
+    <h2 class="text-2xl font-medium">Work</h2>
     <ul class="flex flex-col gap-y-4">
       {
         projects.map((project) => (
@@ -47,14 +48,14 @@ const projects = (await getAllProjects()).slice(0, 2)
         class={buttonVariants({ variant: 'ghost' }) + ' group'}
       >
         See all work <span
-          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          class="text-accent ml-1.5 transition-transform group-hover:translate-x-1"
           >&rarr;</span
         >
       </Link>
     </div>
   </section>
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest posts</h2>
+    <h2 class="text-2xl font-medium">Posts</h2>
     <ul class="flex flex-col gap-y-4">
       {
         blog.map((post) => (
@@ -70,7 +71,7 @@ const projects = (await getAllProjects()).slice(0, 2)
         class={buttonVariants({ variant: 'ghost' }) + ' group'}
       >
         See all posts <span
-          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          class="text-accent ml-1.5 transition-transform group-hover:translate-x-1"
           >&rarr;</span
         >
       </Link>

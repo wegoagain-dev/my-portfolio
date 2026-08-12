@@ -1,9 +1,9 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'wegoagain',
+  title: 'wegoagain.dev',
   description:
-    'DevOps Engineer focused on building reliable infrastructure and scalable systems. Focusing on system design and AI workflows to optimise automation',
+    'IT engineer working across Microsoft 365, identity, endpoint management and security, with a focus on cloud infrastructure, Azure and AI automation.',
   href: 'https://wegoagain.dev',
   author: 'Tawfiq',
   locale: 'en-GB',
