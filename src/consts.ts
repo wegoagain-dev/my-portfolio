@@ -2,7 +2,6 @@ import type { SvgComponent } from "astro/types"
 import Email from "@/assets/icons/email.svg"
 import GitHub from "@/assets/icons/github.svg"
 import LinkedIn from "@/assets/icons/linkedin.svg"
-import RSS from "@/assets/icons/rss.svg"
 import Substack from "@/assets/icons/substack.svg"
 import Twitter from "@/assets/icons/twitter.svg"
 
@@ -36,5 +35,4 @@ export const SOCIALS: { href: string; label: string; icon: SvgComponent }[] = [
     icon: Substack,
   },
   { href: "mailto:tawfiqrahman00@gmail.com", label: "Email", icon: Email },
-  { href: "/rss.xml", label: "RSS", icon: RSS },
 ]
