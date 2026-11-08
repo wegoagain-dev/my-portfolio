@@ -1,7 +1,11 @@
 prose-content {
   a {
-    --underline: var(--muted-foreground);
+    --underline: var(--brand);
     color: var(--foreground);
+
+    &:hover {
+      color: var(--brand);
+    }
   }
 
   :is(strong, b) {

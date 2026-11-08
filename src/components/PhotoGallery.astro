@@ -1,0 +1,188 @@
+---
+import type { ImageMetadata } from "astro"
+import { getImage, Image } from "astro:assets"
+
+type Props = { photos: { image: ImageMetadata; alt: string }[] }
+
+const { photos } = Astro.props
+
+// Full-size (but still optimised) source for the lightbox
+const full = await Promise.all(
+  photos.map(({ image }) =>
+    getImage({
+      src: image,
+      width: Math.min(image.width, 2000),
+      format: "webp",
+    }),
+  ),
+)
+---
+
+<photo-gallery>
+  <ul>
+    {photos.map(({ image, alt }, i) => (
+      <li>
+        <button type="button" data-index={i} data-full={full[i].src} aria-label={`Open ${alt}`}>
+          <Image
+            src={image}
+            alt={alt}
+            widths={[400, 800, 1200]}
+            sizes="(width < 40rem) 100vw, 50vw"
+            loading={i < 4 ? "eager" : "lazy"}
+          />
+        </button>
+      </li>
+    ))}
+  </ul>
+
+  <dialog aria-label="Photo viewer">
+    <img alt="" decoding="async">
+    <p data-caption></p>
+    <form method="dialog">
+      <button type="submit" aria-label="Close">Close</button>
+    </form>
+  </dialog>
+</photo-gallery>
+
+<script>
+  class PhotoGallery extends HTMLElement {
+    connectedCallback() {
+      const dialog = this.querySelector("dialog")!
+      const img = dialog.querySelector("img")!
+      const caption = dialog.querySelector<HTMLElement>("[data-caption]")!
+      const items = [...this.querySelectorAll<HTMLButtonElement>("ul button")]
+      let current = 0
+
+      const show = (i: number) => {
+        current = (i + items.length) % items.length
+        const thumb = items[current].querySelector("img")!
+        img.src = items[current].dataset.full!
+        img.alt = thumb.alt
+        caption.textContent = thumb.alt
+      }
+
+      items.forEach((btn, i) =>
+        btn.addEventListener("click", () => {
+          show(i)
+          dialog.showModal()
+        }),
+      )
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog) dialog.close()
+      })
+      dialog.addEventListener("keydown", (e) => {
+        if (items.length < 2) return
+        if (e.key === "ArrowRight") show(current + 1)
+        if (e.key === "ArrowLeft") show(current - 1)
+      })
+      dialog.addEventListener("close", () => items[current]?.focus())
+    }
+  }
+  customElements.define("photo-gallery", PhotoGallery)
+</script>
+
+<style>
+  photo-gallery {
+    display: block;
+  }
+
+  ul {
+    columns: 2 16rem;
+    column-gap: var(--space-xs);
+    list-style: none;
+
+    li {
+      break-inside: avoid;
+      margin-block-end: var(--space-xs);
+    }
+  }
+
+  ul button {
+    display: block;
+    inline-size: 100%;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--muted);
+    cursor: zoom-in;
+    transition: border-color 150ms ease;
+
+    img {
+      display: block;
+      inline-size: 100%;
+      block-size: auto;
+      transition: transform 300ms ease;
+    }
+
+    &:hover {
+      border-color: var(--brand);
+
+      img {
+        transform: scale(1.02);
+      }
+    }
+  }
+
+  dialog {
+    max-inline-size: 100vw;
+    max-block-size: 100svh;
+    inline-size: 100vw;
+    block-size: 100svh;
+    margin: 0;
+    padding: var(--space-m);
+    border: 0;
+    background: transparent;
+    color: var(--foreground);
+
+    &[open] {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+    }
+
+    &::backdrop {
+      background: color-mix(in oklch, var(--background) 92%, transparent);
+      backdrop-filter: blur(var(--blur-md));
+    }
+
+    img {
+      max-inline-size: min(100%, 75rem);
+      max-block-size: calc(100svh - 7rem);
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    [data-caption] {
+      font-size: var(--step--1);
+      color: var(--muted-foreground);
+    }
+
+    form {
+      position: absolute;
+      inset-block-start: var(--space-s);
+      inset-inline-end: var(--space-s);
+    }
+
+    form button {
+      font-size: var(--step--1);
+      color: var(--muted-foreground);
+      background: none;
+      border: 0;
+      cursor: pointer;
+
+      &:hover {
+        color: var(--brand);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ul button img {
+      transition: none;
+    }
+  }
+</style>
