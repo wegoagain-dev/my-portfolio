@@ -6,7 +6,6 @@ type Props = { photos: { image: ImageMetadata; alt: string }[] }
 
 const { photos } = Astro.props
 
-// Full-size (but still optimised) source for the lightbox
 const full = await Promise.all(
   photos.map(({ image }) =>
     getImage({
@@ -22,7 +21,12 @@ const full = await Promise.all(
   <ul>
     {photos.map(({ image, alt }, i) => (
       <li>
-        <button type="button" data-index={i} data-full={full[i].src} aria-label={`Open ${alt}`}>
+        <button
+          type="button"
+          data-photo={i}
+          data-full={full[i].src}
+          aria-label={`Open ${alt}`}
+        >
           <Image
             src={image}
             alt={alt}
@@ -35,50 +39,54 @@ const full = await Promise.all(
     ))}
   </ul>
 
-  <dialog aria-label="Photo viewer">
+  <dialog data-photo-viewer aria-label="Photo viewer">
     <img alt="" decoding="async">
-    <p data-caption></p>
+    <p></p>
     <form method="dialog">
-      <button type="submit" aria-label="Close">Close</button>
+      <button type="submit">Close</button>
     </form>
   </dialog>
 </photo-gallery>
 
 <script>
-  class PhotoGallery extends HTMLElement {
-    connectedCallback() {
-      const dialog = this.querySelector("dialog")!
-      const img = dialog.querySelector("img")!
-      const caption = dialog.querySelector<HTMLElement>("[data-caption]")!
-      const items = [...this.querySelectorAll<HTMLButtonElement>("ul button")]
-      let current = 0
+  const dialog = document.querySelector<HTMLDialogElement>(
+    "[data-photo-viewer]",
+  )
+  const buttons = [
+    ...document.querySelectorAll<HTMLButtonElement>("[data-photo]"),
+  ]
 
-      const show = (i: number) => {
-        current = (i + items.length) % items.length
-        const thumb = items[current].querySelector("img")!
-        img.src = items[current].dataset.full!
-        img.alt = thumb.alt
-        caption.textContent = thumb.alt
-      }
+  if (dialog && buttons.length > 0) {
+    const img = dialog.querySelector("img")!
+    const caption = dialog.querySelector("p")!
+    let current = 0
 
-      items.forEach((btn, i) =>
-        btn.addEventListener("click", () => {
-          show(i)
-          dialog.showModal()
-        }),
-      )
-      dialog.addEventListener("click", (e) => {
-        if (e.target === dialog) dialog.close()
-      })
-      dialog.addEventListener("keydown", (e) => {
-        if (items.length < 2) return
-        if (e.key === "ArrowRight") show(current + 1)
-        if (e.key === "ArrowLeft") show(current - 1)
-      })
-      dialog.addEventListener("close", () => items[current]?.focus())
+    const show = (index: number) => {
+      current = (index + buttons.length) % buttons.length
+      const alt = buttons[current].querySelector("img")?.alt ?? ""
+      img.src = buttons[current].dataset.full ?? ""
+      img.alt = alt
+      caption.textContent = alt
     }
+
+    for (const button of buttons) {
+      button.addEventListener("click", () => {
+        show(Number(button.dataset.photo))
+        dialog.showModal()
+      })
+    }
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close()
+    })
+
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") show(current + 1)
+      if (event.key === "ArrowLeft") show(current - 1)
+    })
+
+    dialog.addEventListener("close", () => buttons[current]?.focus())
   }
-  customElements.define("photo-gallery", PhotoGallery)
 </script>
 
 <style>
@@ -88,50 +96,31 @@ const full = await Promise.all(
 
   ul {
     columns: 2 16rem;
-    column-gap: var(--space-xs);
-    list-style: none;
+    column-gap: var(--space-s);
 
     li {
       break-inside: avoid;
-      margin-block-end: var(--space-xs);
+      margin-block-end: var(--space-s);
     }
   }
 
   ul button {
     display: block;
     inline-size: 100%;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: var(--muted);
     cursor: zoom-in;
-    transition: border-color 150ms ease;
 
-    img {
-      display: block;
+    :global(img) {
       inline-size: 100%;
       block-size: auto;
-      transition: transform 300ms ease;
-    }
-
-    &:hover {
-      border-color: var(--brand);
-
-      img {
-        transform: scale(1.02);
-      }
     }
   }
 
   dialog {
-    max-inline-size: 100vw;
-    max-block-size: 100svh;
-    inline-size: 100vw;
-    block-size: 100svh;
-    margin: 0;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: 100%;
+    max-block-size: 100%;
     padding: var(--space-m);
-    border: 0;
     background: transparent;
     color: var(--foreground);
 
@@ -144,19 +133,17 @@ const full = await Promise.all(
     }
 
     &::backdrop {
-      background: color-mix(in oklch, var(--background) 92%, transparent);
-      backdrop-filter: blur(var(--blur-md));
+      background-color: color-mix(in oklab, var(--background) 90%, transparent);
+      backdrop-filter: blur(var(--blur-sm));
     }
 
     img {
       max-inline-size: min(100%, 75rem);
       max-block-size: calc(100svh - 7rem);
       object-fit: contain;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
     }
 
-    [data-caption] {
+    p {
       font-size: var(--step--1);
       color: var(--muted-foreground);
     }
@@ -165,24 +152,16 @@ const full = await Promise.all(
       position: absolute;
       inset-block-start: var(--space-s);
       inset-inline-end: var(--space-s);
-    }
 
-    form button {
-      font-size: var(--step--1);
-      color: var(--muted-foreground);
-      background: none;
-      border: 0;
-      cursor: pointer;
+      button {
+        font-size: var(--step--1);
+        color: var(--muted-foreground);
+        cursor: pointer;
 
-      &:hover {
-        color: var(--brand);
+        &:hover {
+          color: var(--foreground);
+        }
       }
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    ul button img {
-      transition: none;
     }
   }
 </style>

@@ -1,10 +1,10 @@
 prose-content {
   a {
-    --underline: var(--brand);
+    --underline: var(--accent-underline);
     color: var(--foreground);
 
     &:hover {
-      color: var(--brand);
+      color: var(--accent-foreground);
     }
   }
 

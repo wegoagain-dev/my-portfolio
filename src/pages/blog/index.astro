@@ -14,12 +14,12 @@ const posts = await getPosts()
       {posts.map((post) => <BlogCard post={post} />)}
     </ul>
   ) : (
-    <p class="empty">Posts coming soon.</p>
+    <p>Posts coming soon.</p>
   )}
 </Layout>
 
 <style>
-  .empty {
+  p {
     color: var(--muted-foreground);
   }
 

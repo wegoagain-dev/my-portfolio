@@ -28,34 +28,15 @@ const photos = Object.entries(modules)
 
 <Layout>
   <MetaPage slot="head" title="Photos" description="My thoughts in images." />
-  <page-intro>
-    <h1>Photos</h1>
-    <p>My thoughts in images.</p>
-  </page-intro>
   {photos.length > 0 ? (
     <PhotoGallery photos={photos} />
   ) : (
-    <p class="empty">Photos coming soon.</p>
+    <p>Photos coming soon.</p>
   )}
 </Layout>
 
 <style>
-  page-intro {
-    display: block;
-    margin-block-end: var(--space-m);
-
-    h1 {
-      font-size: var(--step-2);
-      font-weight: var(--font-weight-medium);
-      line-height: calc(var(--leading-offset) + 1em);
-    }
-
-    p {
-      color: var(--muted-foreground);
-    }
-  }
-
-  .empty {
+  p {
     color: var(--muted-foreground);
   }
 </style>

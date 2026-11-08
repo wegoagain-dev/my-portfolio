@@ -17,12 +17,12 @@ const projects = (await getCollection("projects")).sort(
       {projects.map((project) => <ProjectCard project={project} />)}
     </ul>
   ) : (
-    <p class="empty">Projects coming soon.</p>
+    <p>Projects coming soon.</p>
   )}
 </Layout>
 
 <style>
-  .empty {
+  p {
     color: var(--muted-foreground);
   }
 
