@@ -1,128 +1,108 @@
 ---
-import BlogCard from '@/components/BlogCard.astro'
-import Link from '@/components/Link.astro'
-import PageHead from '@/components/PageHead.astro'
-import ProjectCard from '@/components/ProjectCard.astro'
-import { buttonVariants } from '@/components/ui/button'
-import { SITE } from '@/consts'
-import Layout from '@/layouts/Layout.astro'
-import { getAllProjects, getRecentPosts } from '@/lib/data-utils'
-
-const blog = await getRecentPosts(SITE.featuredPostCount)
-const projects = (await getAllProjects()).slice(0, 2)
+import MetaPage from "@/components/MetaPage.astro"
+import Layout from "@/layouts/Layout.astro"
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="Home" />
-  <section class="rounded-lg border">
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h1 class="text-2xl font-semibold tracking-tight">
-        <span class="typing-text" data-text="Hey, I'm Tawfiq"
-          >Hey, I'm Tawfiq</span
+<Layout>
+  <MetaPage slot="head" />
+  <dictionary-entry>
+    <h1>er·u·dite</h1>
+    <etymology-span>
+      <ipa-span>/ˈer(y)əˌdīt/</ipa-span>
+      adj. [L. <i>ēruditus</i>, instructed, pp. of <i>ērudīre</i> to instruct,
+      polish, lit. to free from roughness, f. ē- out + <i>rudis</i> rough,
+      untrained]
+    </etymology-span>
+    <ol>
+      <li>
+        having or showing deep, wide-ranging knowledge acquired through study;
+        learned (<i>an erudite scholar</i>).
+      </li>
+      <li>
+        (of writing, speech, or argument) reflecting such knowledge; scholarly (<i
+          >an erudite footnote</i
+        >).
+      </li>
+    </ol>
+    <hr>
+    <prose-content>
+      <p>
+        astro-erudite is
+        <a href="https://enscribe.dev" target="_blank" rel="noopener noreferrer"
+          >enscribe</a
+        >'s opinionated, unstyled static blogging template built with
+        <a href="https://astro.build" target="_blank" rel="noopener noreferrer"
+          >Astro</a
         >
-      </h1>
-    </div>
-    <div class="p-6 pt-0">
-      <p class="text-foreground text-sm">
-        I'm an IT engineer working across Microsoft 365, identity, endpoint
-        management and security. I build cloud infrastructure with Terraform,
-        Kubernetes and GitHub Actions, and I'm currently expanding my work
-        across Azure and AI automation.
+        and native CSS. astro-erudite uses no UI or CSS framework and contains
+        minimal dependencies.
       </p>
-    </div>
-  </section>
-  <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Work</h2>
-    <ul class="flex flex-col gap-y-4">
-      {
-        projects.map((project) => (
-          <li>
-            <ProjectCard project={project} compact />
-          </li>
-        ))
-      }
-    </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/work"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all work <span
-          class="text-accent ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span
+      <p>
+        To use this template, check out the
+        <a
+          href="https://github.com/jktrn/astro-erudite"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
         >
-      </Link>
-    </div>
-  </section>
-  <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Posts</h2>
-    <ul class="flex flex-col gap-y-4">
-      {
-        blog.map((post) => (
-          <li>
-            <BlogCard entry={post} />
-          </li>
-        ))
-      }
-    </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/blog"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all posts <span
-          class="text-accent ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span
-        >
-      </Link>
-    </div>
-  </section>
+        repository. To learn more about why this template exists, read this blog
+        post: <a href="/blog/introducing-v2">Introducing astro-erudite v2</a>.
+      </p>
+    </prose-content>
+  </dictionary-entry>
 </Layout>
 
 <style>
-  .typing-text::after {
-    content: '|';
-    animation: blink 0.7s infinite;
-  }
+  dictionary-entry {
+    display: block;
+    font-size: var(--step-0);
+    color: var(--muted-foreground);
 
-  @keyframes blink {
-    0%,
-    50% {
-      opacity: 1;
-    }
-    51%,
-    100% {
-      opacity: 0;
-    }
-  }
-</style>
-
-<script>
-  function initTyping() {
-    const element = document.querySelector('.typing-text')
-    if (!element) return
-    const text = element.getAttribute('data-text') || element.textContent || ''
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      element.textContent = text
-      return
+    @media (width >= 64rem) {
+      margin-block-start: -0.2em;
     }
 
-    // Reset the element
-    element.textContent = ''
-    let index = 0
+    ipa-span {
+      opacity: 0.6;
+    }
 
-    function type() {
-      if (index < text.length && element) {
-        element.textContent += text.charAt(index)
-        index++
-        setTimeout(type, 80)
+    h1 {
+      font-size: var(--step-2);
+      line-height: calc(var(--leading-offset) + 1em);
+      font-weight: var(--font-weight-medium);
+      color: var(--foreground);
+      margin-block-end: var(--space-2xs);
+    }
+
+    ol {
+      margin-block-start: var(--space-xs);
+      list-style: none;
+
+      li {
+        padding-inline-start: 1em;
+        text-indent: -1em;
+
+        &::before {
+          content: counter(list-item);
+          display: inline-block;
+          inline-size: 1em;
+          text-indent: 0;
+          font-weight: var(--font-weight-medium);
+        }
+
+        + li {
+          margin-block-start: var(--space-3xs);
+        }
       }
     }
 
-    type()
-  }
+    hr {
+      margin-block: var(--space-m);
+      border-block-start: 2px solid var(--border);
+    }
 
-  // Only use astro:page-load - it fires on initial load and every navigation
-  document.addEventListener('astro:page-load', initTyping)
-</script>
+    prose-content {
+      margin-block-start: var(--space-xs);
+    }
+  }
+</style>

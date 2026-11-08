@@ -1,96 +1,61 @@
 ---
-import { Button } from '@/components/ui/button'
-import { Icon } from 'astro-icon/components'
-
-interface Props {
-  class?: string
-}
-
-const { class: className = '' } = Astro.props
+import MoonIcon from "@/assets/icons/moon.svg"
+import SunIcon from "@/assets/icons/sun.svg"
 ---
 
-<Button
-  data-theme-toggle
-  variant="ghost"
-  size="icon"
-  title="Toggle theme"
-  aria-label="Toggle theme"
-  className={`-my-2 -me-2 size-8 ${className}`}
->
-  <Icon name="lucide:sun" class="size-4 dark:hidden" />
-  <Icon name="lucide:moon" class="absolute hidden size-4 dark:block" />
-  <span class="sr-only">Toggle theme</span>
-</Button>
+<button id="theme-toggle" data-icon-button aria-label="Toggle theme">
+  <light-icon><SunIcon /></light-icon>
+  <dark-icon><MoonIcon /></dark-icon>
+</button>
 
-<script is:inline data-astro-rerun>
-  ;(() => {
-    const theme = (() => {
-      const stored = localStorage?.getItem('theme') ?? ''
-      if (['dark', 'light'].includes(stored)) return stored
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
-    })()
+<style is:global>
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
 
-    document.documentElement.setAttribute('data-theme', theme)
-    window.localStorage.setItem('theme', theme)
-  })()
-</script>
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  dark-icon {
+    display: none;
+  }
+
+  :root[data-theme="dark"] {
+    light-icon {
+      display: none;
+    }
+
+    dark-icon {
+      display: inline;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      light-icon {
+        display: none;
+      }
+
+      dark-icon {
+        display: inline;
+      }
+    }
+  }
+</style>
 
 <script>
-  const THEME_TOGGLE_SELECTOR = '[data-theme-toggle]'
-
-  function getPreferredTheme() {
-    const stored = localStorage?.getItem('theme') ?? ''
-    if (stored === 'dark' || stored === 'light') return stored
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light'
+  const toggleTheme = () => {
+    const root = document.documentElement
+    const dark =
+      root.dataset.theme === "dark" ||
+      (!root.dataset.theme &&
+        matchMedia("(prefers-color-scheme: dark)").matches)
+    const theme = dark ? "light" : "dark"
+    root.dataset.theme = theme
+    localStorage.theme = theme
   }
 
-  function applyTheme(theme: 'dark' | 'light', disableTransition = false) {
-    const element = document.documentElement
-
-    if (disableTransition) {
-      element.classList.add('[&_*]:transition-none')
-    }
-
-    element.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
-
-    if (disableTransition) {
-      window.getComputedStyle(element).getPropertyValue('opacity')
-      requestAnimationFrame(() => {
-        element.classList.remove('[&_*]:transition-none')
-      })
-    }
-  }
-
-  function handleToggleClick() {
-    const element = document.documentElement
-    const currentTheme = element.getAttribute('data-theme')
-    const newTheme =
-      (currentTheme === 'dark' ? 'light' : 'dark') as 'dark' | 'light'
-    applyTheme(newTheme, true)
-  }
-
-  function initThemeToggle() {
-    const toggles = Array.from(
-      document.querySelectorAll<HTMLElement>(THEME_TOGGLE_SELECTOR),
-    )
-
-    toggles.forEach((toggle) => {
-      if (toggle.dataset.themeToggleBound === 'true') return
-      toggle.addEventListener('click', handleToggleClick)
-      toggle.dataset.themeToggleBound = 'true'
-    })
-  }
-
-  initThemeToggle()
-
-  document.addEventListener('astro:after-swap', () => {
-    applyTheme(getPreferredTheme(), true)
-    initThemeToggle()
-  })
+  const button = document.getElementById("theme-toggle")
+  if (button) button.onclick = toggleTheme
 </script>

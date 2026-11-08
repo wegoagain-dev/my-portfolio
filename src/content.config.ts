@@ -1,38 +1,55 @@
-import { glob } from 'astro/loaders'
-import { defineCollection, z } from 'astro:content'
+import { glob } from "astro/loaders"
+import { defineCollection, reference } from "astro:content"
+import { z } from "astro/zod"
+
+const authors = defineCollection({
+  loader: glob({
+    pattern: "**/[^_]*.md",
+    base: "./src/content/authors",
+  }),
+  schema: z.object({
+    name: z.string(),
+    pronouns: z.string().optional(),
+    avatar: z.url().or(z.string().startsWith("/")),
+    bio: z.string().optional(),
+    mail: z.email().optional(),
+    socials: z.record(z.string(), z.url()).optional(),
+  }),
+})
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
+  loader: glob({
+    pattern: "**/[^_]*.md",
+    base: "./src/content/blog",
+  }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       description: z.string(),
       date: z.coerce.date(),
-      updatedDate: z.coerce.date().optional(),
       order: z.number().optional(),
-      image: image().optional(),
       tags: z.array(z.string()).optional(),
+      authors: z.array(reference("authors")),
+      image: image().optional(),
       draft: z.boolean().optional(),
     }),
 })
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
+  loader: glob({
+    pattern: "**/[^_]*.md",
+    base: "./src/content/projects",
+  }),
   schema: ({ image }) =>
     z.object({
       name: z.string(),
       description: z.string(),
-      impact: z.string().optional(),
-      scale: z.string().optional(),
-      availability: z.string().optional(),
-      cost: z.string().optional(),
-      keyLearning: z.string().optional(),
-      tags: z.array(z.string()),
-      image: image(),
-      link: z.string().url(),
+      link: z.url(),
+      tags: z.array(z.string()).optional(),
+      image: image().optional(),
       startDate: z.coerce.date().optional(),
       endDate: z.coerce.date().optional(),
     }),
 })
 
-export const collections = { blog, projects }
+export const collections = { blog, authors, projects }
