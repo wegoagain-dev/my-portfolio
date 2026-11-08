@@ -12,12 +12,20 @@ const projects = (await getCollection("projects")).sort(
 
 <Layout>
   <MetaPage slot="head" title="Projects" />
-  <ul>
-    {projects.map((project) => <ProjectCard project={project} />)}
-  </ul>
+  {projects.length > 0 ? (
+    <ul>
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </ul>
+  ) : (
+    <p class="empty">Projects coming soon.</p>
+  )}
 </Layout>
 
 <style>
+  .empty {
+    color: var(--muted-foreground);
+  }
+
   ul {
     display: flex;
     flex-direction: column;

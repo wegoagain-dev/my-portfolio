@@ -1,8 +1,9 @@
 ---
-import Logo from "@/assets/logo.svg"
+import avatar from "@/assets/avatar.png"
 import ThemeToggle from "@/components/ThemeToggle.astro"
 import { NAVIGATION, SITE } from "@/consts"
 import { normalizePath } from "@/lib/utils"
+import { Image } from "astro:assets"
 
 type Props = { crumbs?: { label: string; href: string }[] }
 
@@ -16,7 +17,7 @@ const section = NAVIGATION.find(
 <aside data-bar>
   <sidebar-inner>
     <a href="/" aria-label={SITE.title}>
-      <Logo />
+      <Image src={avatar} alt="" width={64} height={64} />
       <span>{SITE.title}</span>
     </a>
     <nav>
@@ -100,9 +101,10 @@ const section = NAVIGATION.find(
       color: var(--foreground);
       text-decoration-line: none;
 
-      svg {
-        inline-size: 1.125rem;
-        block-size: 1.125rem;
+      img {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        border-radius: 50%;
         flex-shrink: 0;
       }
 

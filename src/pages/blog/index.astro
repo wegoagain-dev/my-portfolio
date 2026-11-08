@@ -9,12 +9,20 @@ const posts = await getPosts()
 
 <Layout>
   <MetaPage slot="head" title="Blog" />
-  <ul>
-    {posts.map((post) => <BlogCard post={post} />)}
-  </ul>
+  {posts.length > 0 ? (
+    <ul>
+      {posts.map((post) => <BlogCard post={post} />)}
+    </ul>
+  ) : (
+    <p class="empty">Posts coming soon.</p>
+  )}
 </Layout>
 
 <style>
+  .empty {
+    color: var(--muted-foreground);
+  }
+
   ul {
     display: flex;
     flex-direction: column;
