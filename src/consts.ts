@@ -8,7 +8,7 @@ import Twitter from "@/assets/icons/twitter.svg"
 export const SITE = {
   title: "wegoagain.dev",
   description:
-    "IT engineer working in Azure, learning identity and access management and cloud engineering.",
+    "IT engineer working with Microsoft identity, devices and Azure, and building towards cloud engineering.",
   locale: "en-GB",
   dir: "ltr",
   defaultPageImage: "/static/opengraph-image.png",
